@@ -1,1 +1,1 @@
-Please move to https://emutyworks.github.io/
+Please move to https://github.com/emutyworks/emutyworks.github.io/wiki
