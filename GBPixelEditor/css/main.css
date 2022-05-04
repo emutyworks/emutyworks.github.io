@@ -1,0 +1,17 @@
+/*
+GBPixelEditor
+
+Copyright (c) 2022 emutyworks
+
+Released under the MIT license
+https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
+*/
+body, input, select {
+  font-family: helvetica, arial, sans-serif;
+  font-size: 9pt;
+  padding: 0px 0px 0px 0px;
+  cursor: default;
+  }
+canvas {
+  border: 1px solid #ff0000;
+  }
