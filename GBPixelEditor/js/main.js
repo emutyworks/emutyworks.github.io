@@ -6,16 +6,73 @@ Copyright (c) 2022 emutyworks
 Released under the MIT license
 https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 */
-var canvas = document.getElementById("view_dot");
-var ctx = canvas.getContext("2d");
+window.onload = function(){
+  view = document.getElementById('view');
+  ctx = view.getContext('2d');
 
+  cursor = document.getElementById('cursor');
+  c_ctx = cursor.getContext('2d');
+
+	init_view();
+
+	/* canvas mouse event */
+	function onMouseDown(e){
+    mousePos(e);
+		//console.log(cur_info);
+
+		if(cur_info['x']>PALETTE_START_X
+			&& cur_info['x']<(PALETTE_SIZE * 4)
+			&& cur_info['y']>PALETTE_START_Y
+			&& cur_info['y']<PALETTE_SIZE
+			){
+			pick_pallete();
+		}
+
+		if(cur_info['x']>EDITOR_START_X
+			&& cur_info['x']<EDITOR_START_X + (PIXEL_SIZE * MAX_PIXEL_X)
+			&& cur_info['y']>EDITOR_START_Y
+			&& cur_info['y']<EDITOR_START_Y + (PIXEL_SIZE * MAX_PIXEL_Y)
+			){
+			set_dot();
+		}
+
+	}
+	cursor.addEventListener('mousedown', onMouseDown, false);
+/*
+	function onMouseMove(e){
+    mousePos(e);
+	}
+  cursor.addEventListener('mousemove', onMouseMove, false);
+*/
+}
+
+function mousePos(e){
+	//var rect = e.target.getBoundingClientRect();
+	var org_x = e.clientX;
+	var org_y = e.clientY;
+	var x = org_x - OFFSET_X;
+	var y = org_y - OFFSET_Y;
+
+	cur_info = {
+		'org_x': org_x,
+		'org_y': org_y,
+		'x': x,
+		'y': y,
+	};
+
+//console.log("x:"+x+" y:"+y);
+//console.log(cur_info);
+
+}
+
+/*
 $(function(){
 	$("#data_upload").change(function(e){
 		
 		var file = e.target.files[0];
 		var reader = new FileReader();
 
-		reader.onload = function() {
+		reader.onload = function(){
 	
 			var ar = new Uint8Array(reader.result);
 			console.log(ar);
@@ -81,16 +138,5 @@ $(function(){
 		ctx.putImageData(imgD, 0, 0);
 	})
 })
+*/
 
-function toHex(v) {
-	var len = v.toString(16).length;
-	return '$' + (('00' + v.toString(16).toLowerCase()).substring(len,len + 2));
-}
-function toBin(v) {
-	var len = v.toString(2).length;
-	return '%' + (('00000000' + v.toString(2).toLowerCase()).substring(len,len + 8));
-}
-function toBin2(v) {
-	var len = v.toString(2).length;
-	return (('00000000' + v.toString(2).toLowerCase()).substring(len,len + 8));
-}

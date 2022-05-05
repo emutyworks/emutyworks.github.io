@@ -16,16 +16,29 @@ https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 <meta http-equiv="Content-Style-Type" content="text/css" />
 <link rel="stylesheet" type="text/css" href="css/main.css">
 <script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="js/editor.js"></script>
+<script type="text/javascript" src="js/init.js"></script>
+<script type="text/javascript" src="palette.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
+<!--
 Upload All-purpose binary file (*.bin): <input type="file" id="data_upload" accept="*/*"><br>
+-->
 <br>
-<canvas id="view_dot" width="32" height="32"></canvas>
+<canvas id="view" width="" height=""></canvas>
+<canvas id="cursor" width="" height=""></canvas>
+
 <br>
+<br>
+<br>
+<!--
+<div id="debug_view">
 <pre>
 Hex: <div id="view_hex"></div>
 Bin: <div id="view_bin"></div>
 </pre>
-<script type="text/javascript" src="js/main.js"></script>
+</div>
+-->
 </body>
 </html>
