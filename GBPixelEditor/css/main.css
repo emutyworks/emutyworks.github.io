@@ -12,41 +12,38 @@ body, input, select{
   padding: 0px 0px 0px 0px;
   cursor: default;
 }
-.mono {
+.mono{
 	font-family: monospace;
-	font-size: 10pt;
+	font-size: 9pt;
+}
+.radio{
+  position: relative;
+  top: 3px;
+  transform:scale(1.0);
 }
 #view{
   position: absolute;
   z-index: 0;
   left: 10px;
-  top: 40px;
+  top: 35px;
 }
 #cursor{
   position: absolute;
   z-index: 1;
   left: 10px;
-  top: 40px;
+  top: 35px;
 }
-#filename {
+#filename{
   width: 100px;
 }
-
 #github_link{
   visibility: visible;
   position: relative;
   left: 0px;
-  top: 150px;
+  top: 185px;
 }
-hr {
+hr{
   height: 1px;
   background-color: #d0d0d0;
   border: none;
-}
-
-#debug_view {
-  visibility: visible;
-  position: relative;
-  left: 10px;
-  top: 100px;
 }

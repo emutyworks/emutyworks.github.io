@@ -22,13 +22,12 @@ https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 <script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
-File Name: <input type="text" id="filename">&nbsp;
+File Name: <input type="text" id="filename"> 
+<input class="radio" type="radio" name="download_lang" value="asm">[asm]
+<input class="radio" type="radio" name="download_lang" value="c">[c/c++] 
 <a id="download" href="" download="" onclick="data_download()" target="_blank">Download</a> | 
 Upload <input type="file" id="data_upload" accept="*/*"><br>
-
-<!--
-<span id="edit_info"></span><br>
--->
+<!-- <span id="edit_info"></span><br> -->
 
 <canvas id="view" width="" height=""></canvas>
 <canvas id="cursor" width="" height=""></canvas>
