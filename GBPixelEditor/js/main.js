@@ -209,7 +209,7 @@ function data_download(){
 
   var content = '';
   content += "# [Create] " + dt.toString() + "\n";
-  //content += "# [FileName] " + $("#filename").val() + "\n";
+  content += "# [FileName] " + $("#filename").val() + "\n";
   content += "# [Language] " + lang + "\n";
   content += "#\n";
 
