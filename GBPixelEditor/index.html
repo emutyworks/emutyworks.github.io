@@ -22,23 +22,21 @@ https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 <script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
+File Name: <input type="text" id="filename">&nbsp;
+<a id="download" href="" download="" onclick="data_download()" target="_blank">Download</a> | 
+Upload <input type="file" id="data_upload" accept="*/*"><br>
+
 <!--
-Upload All-purpose binary file (*.bin): <input type="file" id="data_upload" accept="*/*"><br>
+<span id="edit_info"></span><br>
 -->
-<br>
+
 <canvas id="view" width="" height=""></canvas>
 <canvas id="cursor" width="" height=""></canvas>
 
-<br>
-<br>
-<br>
-<!--
-<div id="debug_view">
-<pre>
-Hex: <div id="view_hex"></div>
-Bin: <div id="view_bin"></div>
-</pre>
-</div>
--->
+<span id="github_link">
+<hr>
+<a href="https://github.com/emutyworks/GBPixelEditor" target="_blank">https://github.com/emutyworks/GBPixelEditor</a>
+</span>
+
 </body>
 </html>

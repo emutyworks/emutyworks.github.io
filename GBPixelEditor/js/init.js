@@ -12,7 +12,7 @@ var PIXEL_SIZE = 16;
 var PALETTE_SIZE = 16;
 
 var OFFSET_X = 10;
-var OFFSET_Y = 10;
+var OFFSET_Y = 40;
 var EDITOR_LINE = "#c0c000";
 var EDITOR_GUIDE = "#ffc0c0";
 var EDITOR_START_X = 80;
@@ -26,6 +26,19 @@ var view = null;
 var cursor = null;
 var ctx = null;
 var c_ctx = null;
+var edit_d = [
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,
+];
+
+var mouse_down = false;
+
 var palettes = null;
 var pal_info = {
 	'index': 0,
@@ -36,7 +49,11 @@ var cur_info = {
   org_y: 0,
   x: 0,
   y: 0,
+	//editor
+  dx: 0,
+  dy: 0,
 };
+//console.log(cur_info);
 
 var editor_info = {
 	w: PIXEL_SIZE * MAX_PIXEL_X,
@@ -51,6 +68,7 @@ function init_view(){
 	
 	init_editor();
 	set_palette();
+	view_edit_info();
 }
 
 function init_editor(){
@@ -70,6 +88,8 @@ function init_editor(){
 		ctx.fillRect(fill_x, fill_y+PIXEL_SIZE*i, fill_w, 1);
 	}
 	drowBox(fill_x, fill_y, fill_w, fill_h,EDITOR_GUIDE);
+
+	set_download_data();
 }
 
 function drowBox(x,y,w,h,c){
@@ -84,11 +104,9 @@ function toHex(v){
 	var len = v.toString(16).length;
 	return '$' + (('00' + v.toString(16).toLowerCase()).substring(len,len + 2));
 }
-function toBin(v){
+function hex2bin(v){
+	v = parseInt(v, 16);
 	var len = v.toString(2).length;
-	return '%' + (('00000000' + v.toString(2).toLowerCase()).substring(len,len + 8));
-}
-function toBin2(v){
-	var len = v.toString(2).length;
-	return (('00000000' + v.toString(2).toLowerCase()).substring(len,len + 8));
+	return ('00000000' + v.toString(2).toLowerCase()).substring(len,len + 8);
+	//return '%' + (('00000000' + v.toString(2).toLowerCase()).substring(len,len + 8));
 }

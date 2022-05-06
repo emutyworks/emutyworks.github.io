@@ -6,16 +6,34 @@ Copyright (c) 2022 emutyworks
 Released under the MIT license
 https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 */
-function set_dot(){
-	var x = parseInt((cur_info['x'] - EDITOR_START_X) / PIXEL_SIZE);
-	var y = parseInt((cur_info['y'] - EDITOR_START_Y) / PIXEL_SIZE);
+function view_edit_info(){
+  var dx = ('000' + cur_info['dx']).slice(-3);
+  var dy = ('000' + cur_info['dy']).slice(-3);
 
-	console.log("x:"+x+" y:"+y);
-
-	var i = pal_info['index'];
-	ctx.fillStyle = palettes[0][i];
-	ctx.fillRect(EDITOR_START_X + (PIXEL_SIZE * x) + 1, EDITOR_START_Y + (PIXEL_SIZE * y) + 1, PIXEL_SIZE - 1, PIXEL_SIZE - 1);
+  $('#edit_info').html('<span class="mono"> x:' + dx + " y:" + dy + "</span>");
 }
+
+function set_dot(){
+	var dx = cur_info['dx'];
+	var dy = cur_info['dy'];
+	var i = pal_info['index'];
+	
+	edit_d[dx + (dy * 8)] = i;
+	ctx.fillStyle = palettes[0][i];
+	ctx.fillRect(EDITOR_START_X + (PIXEL_SIZE * dx) + 1, EDITOR_START_Y + (PIXEL_SIZE * dy) + 1, PIXEL_SIZE - 1, PIXEL_SIZE - 1);
+}
+
+function set_download_data(){
+	for(var dy=0; dy<8; dy++){
+		for(var dx=0; dx<8; dx++){
+			var i = edit_d[dx+(dy*8)];
+
+			ctx.fillStyle = palettes[0][i];
+			ctx.fillRect(EDITOR_START_X + (PIXEL_SIZE * dx) + 1, EDITOR_START_Y + (PIXEL_SIZE * dy) + 1, PIXEL_SIZE - 1, PIXEL_SIZE - 1);
+		}
+	}
+}
+
 
 function pick_pallete(){
 	if(cur_info['x']>0 && cur_info['x']<(PALETTE_SIZE*1)){

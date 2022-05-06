@@ -11,23 +11,42 @@ body, input, select{
   font-size: 9pt;
   padding: 0px 0px 0px 0px;
   cursor: default;
-  }
+}
+.mono {
+	font-family: monospace;
+	font-size: 10pt;
+}
 #view{
   position: absolute;
   z-index: 0;
   left: 10px;
-  top: 10px;
-  }
+  top: 40px;
+}
 #cursor{
   position: absolute;
   z-index: 1;
   left: 10px;
-  top: 10px;
-  }
+  top: 40px;
+}
+#filename {
+  width: 100px;
+}
+
+#github_link{
+  visibility: visible;
+  position: relative;
+  left: 0px;
+  top: 150px;
+}
+hr {
+  height: 1px;
+  background-color: #d0d0d0;
+  border: none;
+}
+
 #debug_view {
   visibility: visible;
   position: relative;
-  z-index: 1;
   left: 10px;
   top: 100px;
-  }
+}
