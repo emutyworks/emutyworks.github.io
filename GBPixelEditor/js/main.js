@@ -13,8 +13,8 @@ window.onload = function(){
   cursor = document.getElementById('cursor');
   c_ctx = cursor.getContext('2d');
 
-  $('#filename').val('new_tiles');
-  $("input[name=download_lang][value='asm']").prop("checked",true);
+  $('#filename').val(init_form['filename']);
+  $("input[name=download_lang][value='" + init_form['download_lang'] + "']").prop('checked',true);
 
   init_view();
 

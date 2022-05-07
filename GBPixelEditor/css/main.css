@@ -13,8 +13,8 @@ body, input, select{
   cursor: default;
 }
 .mono{
-	font-family: monospace;
-	font-size: 9pt;
+  font-family: monospace;
+  font-size: 9pt;
 }
 .radio{
   position: relative;

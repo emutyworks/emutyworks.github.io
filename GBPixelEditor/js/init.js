@@ -33,57 +33,51 @@ var c_ctx = null;
 var mouse_down = false;
 
 var edit_d = [
-	0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,
-	0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,
 ];
-
-var palettes = null;
-var pal_info = {
-	'index': 3,
-	'pal_bank': 0,
-};
 
 var cur_info = {
   org_x: 0,
   org_y: 0,
   x: 0,
   y: 0,
-	//editor
+  //editor
   dx: 0,
   dy: 0,
 };
 
 var editor_info = {
-	w: PIXEL_SIZE * MAX_PIXEL_X,
-	h: PIXEL_SIZE * MAX_PIXEL_X,
+  w: PIXEL_SIZE * MAX_PIXEL_X,
+  h: PIXEL_SIZE * MAX_PIXEL_X,
 };
 
 var preview_info = {
-	w: PREVIEW_SIZE * MAX_PIXEL_X,
-	h: PREVIEW_SIZE * MAX_PIXEL_X,
+  w: PREVIEW_SIZE * MAX_PIXEL_X,
+  h: PREVIEW_SIZE * MAX_PIXEL_X,
 };
 
 function init_view(){
-	$('#view').attr({
-		width: VIEW_MAX_X + 100 + 'px',
-		height: VIEW_MAX_Y + 'px',
-	});
-	$('#cursor').attr({
-		width: VIEW_MAX_X + 100 + 'px',
-		height: VIEW_MAX_Y + 'px',
-	});
-	
-	init_editor();
-	init_preview();
-	set_download_data();
-	set_palette();
-	//view_edit_info();
+  $('#view').attr({
+    width: VIEW_MAX_X + 100 + 'px',
+    height: VIEW_MAX_Y + 'px',
+  });
+  $('#cursor').attr({
+    width: VIEW_MAX_X + 100 + 'px',
+    height: VIEW_MAX_Y + 'px',
+  });
+  
+  init_editor();
+  init_preview();
+  set_download_data();
+  set_palette();
+  //view_edit_info();
 }
 
 function init_editor(){
@@ -95,17 +89,17 @@ function init_editor(){
   ctx.fillStyle = palettes[0][0];
   ctx.fillRect(fill_x, fill_y, fill_w, fill_h);
 
-	ctx.fillStyle = EDITOR_LINE;
-	for(var i=0; i<MAX_PIXEL_X; i++){
-		ctx.fillRect(fill_x + PIXEL_SIZE * i, fill_y, 1, fill_h);
-	}
-	for(var i=0; i<MAX_PIXEL_Y; i++){
-		ctx.fillRect(fill_x, fill_y + PIXEL_SIZE * i, fill_w, 1);
-	}
-	drowBox(fill_x, fill_y, fill_w, fill_h, EDITOR_BOX);
-	ctx.fillStyle = EDITOR_LINE2;
-	ctx.fillRect(fill_x + PIXEL_SIZE * 4, fill_y, 1, fill_h);
-	ctx.fillRect(fill_x, fill_y + PIXEL_SIZE * 4, fill_w, 1);
+  ctx.fillStyle = EDITOR_LINE;
+  for(var i=0; i<MAX_PIXEL_X; i++){
+    ctx.fillRect(fill_x + PIXEL_SIZE * i, fill_y, 1, fill_h);
+  }
+  for(var i=0; i<MAX_PIXEL_Y; i++){
+    ctx.fillRect(fill_x, fill_y + PIXEL_SIZE * i, fill_w, 1);
+  }
+  drowBox(fill_x, fill_y, fill_w, fill_h, EDITOR_BOX);
+  ctx.fillStyle = EDITOR_LINE2;
+  ctx.fillRect(fill_x + PIXEL_SIZE * 4, fill_y, 1, fill_h);
+  ctx.fillRect(fill_x, fill_y + PIXEL_SIZE * 4, fill_w, 1);
 }
 
 function init_preview(){
@@ -114,24 +108,24 @@ function init_preview(){
   var fill_w = preview_info['w'];
   var fill_h = preview_info['h'];
 
-	drowBox(fill_x, fill_y, fill_w + 1, fill_h + 1, EDITOR_BOX);
+  drowBox(fill_x, fill_y, fill_w + 1, fill_h + 1, EDITOR_BOX);
 }
 
 function drowBox(x,y,w,h,c){
-	ctx.fillStyle = c;
-	ctx.fillRect(x, y, 1, h);
-	ctx.fillRect(x, y, w, 1);
-	ctx.fillRect(x + w, y, 1, h);
-	ctx.fillRect(x, y + h, w + 1, 1);
+  ctx.fillStyle = c;
+  ctx.fillRect(x, y, 1, h);
+  ctx.fillRect(x, y, w, 1);
+  ctx.fillRect(x + w, y, 1, h);
+  ctx.fillRect(x, y + h, w + 1, 1);
 }
 
 function toHex(v){
-	var len = v.toString(16).length;
-	return (('00' + v.toString(16).toUpperCase()).substring(len, len + 2));
+  var len = v.toString(16).length;
+  return (('00' + v.toString(16).toUpperCase()).substring(len, len + 2));
 }
 
 function hex2bin(v){
-	v = parseInt(v, 16);
-	var len = v.toString(2).length;
-	return ('00000000' + v.toString(2)).substring(len, len + 8);
+  v = parseInt(v, 16);
+  var len = v.toString(2).length;
+  return ('00000000' + v.toString(2)).substring(len, len + 8);
 }
