@@ -35,7 +35,7 @@ function edit_clipboard(e){
 function copyToEditor(){
   var clipboard_x = cur_info['cx'] * CLIPBOARD_SIZE;
   var clipboard_y = cur_info['cy'] * CLIPBOARD_SIZE;
-  var clipboard_d_p = cur_info['cx'] * 64 + cur_info['cy'] * 512;
+  var clipboard_d_p = cur_info['cx'] * 64 + cur_info['cy'] * CLIPBOARD_MAX_CX * 64;
 
   for(var dy=0; dy<8; dy++){
     for(var dx=0; dx<8; dx++){
