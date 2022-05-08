@@ -7,8 +7,10 @@ Released under the MIT license
 https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 */
 var init_form = {
-  'filename': 'new_tiles',
-  'download_lang': 'asm',// 'asm','c'
+  filename: 'new_tiles',
+  download_lang: 'asm',// 'asm','c'
+  edit_size_x: 8,
+  edit_size_y: 8,
 };
 
 var palettes = {
@@ -23,8 +25,9 @@ var palettes = {
   }
 };
 var pal_info = {
-  'index': 3,
-  'pal_bank': 0,
+  index: 3,
+  bank: 0,
+  selected: 0,
 };
 
 

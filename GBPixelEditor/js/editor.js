@@ -6,6 +6,61 @@ Copyright (c) 2022 emutyworks
 Released under the MIT license
 https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 */
+function edit_clipboard(e){
+  var clipboard_x = cur_info['cx'] * CLIPBOARD_SIZE;
+  var clipboard_y = cur_info['cy'] * CLIPBOARD_SIZE;
+  set_clipboard_line();
+  drowBox(CLIPBOARD_START_X + clipboard_x, CLIPBOARD_START_Y + clipboard_y, CLIPBOARD_SIZE, CLIPBOARD_SIZE, EDITOR_BOX);
+  set_tips('clipboard');
+
+  if(mouse_down){
+    if(e.shiftKey){
+      flag = edit_confirm_alert('Do you want to copy a editor to a clipboard?');
+      if(flag){
+        copyToClipboard();
+        set_clipboard_line();
+      }
+    }else{
+      flag = edit_confirm_alert('Do you want to copy a clipboard to a editor?');
+      if(flag){
+        copyToEditor();
+        set_clipboard_line();
+      }
+    }
+    mouse_down = false;
+    document.activeElement.blur();
+  }
+}
+
+function copyToEditor(){
+  var clipboard_x = cur_info['cx'] * CLIPBOARD_SIZE;
+  var clipboard_y = cur_info['cy'] * CLIPBOARD_SIZE;
+  var clipboard_d_p = cur_info['cx'] * 64 + cur_info['cy'] * 512;
+
+  for(var dy=0; dy<8; dy++){
+    for(var dx=0; dx<8; dx++){
+      edit_d[dx + dy * 8] = clipboard_d[ clipboard_d_p + dx + dy * 8];
+    }
+  }
+  set_edit_data();
+}
+
+function copyToClipboard(){
+  var clipboard_x = cur_info['cx'] * CLIPBOARD_SIZE;
+  var clipboard_y = cur_info['cy'] * CLIPBOARD_SIZE;
+  var clipboard_d_p = cur_info['cx'] * 64 + cur_info['cy'] * 512;
+
+  for(var dy=0; dy<8; dy++){
+    for(var dx=0; dx<8; dx++){
+      var i = edit_d[dx + dy * 8];
+
+      clipboard_d[clipboard_d_p + dx + dy * 8] = i;
+      ctx.fillStyle = palettes[0][i];
+      ctx.fillRect(CLIPBOARD_START_X + 1 + clipboard_x + PREVIEW_SIZE * dx, CLIPBOARD_START_Y + 1 + clipboard_y + PREVIEW_SIZE * dy, PREVIEW_SIZE, PREVIEW_SIZE);
+    }
+  }
+}
+
 function set_dot(){
   var dx = cur_info['dx'];
   var dy = cur_info['dy'];
@@ -17,14 +72,35 @@ function set_dot(){
   ctx.fillRect(PREVIEW_START_X + 1 + PREVIEW_SIZE * dx, PREVIEW_START_Y + 1 + PREVIEW_SIZE * dy, PREVIEW_SIZE, PREVIEW_SIZE);
 }
 
-function set_download_data(){
-  for(var dy=0; dy<8; dy++){
-    for(var dx=0; dx<8; dx++){
-      var i = edit_d[dx + dy * 8];
+function set_edit_data(){
+  for(var dy=0; dy<init_form['edit_size_x']; dy++){
+    for(var dx=0; dx<init_form['edit_size_y']; dx++){
+      var i = edit_d[dx + dy * init_form['edit_size_y']];
 
       ctx.fillStyle = palettes[0][i];
       ctx.fillRect(EDITOR_START_X + 1 + PIXEL_SIZE * dx, EDITOR_START_Y + 1 + PIXEL_SIZE * dy, PIXEL_SIZE - 1, PIXEL_SIZE - 1);
       ctx.fillRect(PREVIEW_START_X + 1 + PREVIEW_SIZE * dx, PREVIEW_START_Y + 1 + PREVIEW_SIZE * dy, PREVIEW_SIZE, PREVIEW_SIZE);
+    }
+  }
+}
+
+function set_clipboard_data(){
+  var d_cnt = 0;
+  for(var cy=0; cy<CLIPBOARD_MAX_CY; cy++){
+    for(var cx=0; cx<CLIPBOARD_MAX_CX; cx++){
+
+      var clipboard_x = cx * CLIPBOARD_SIZE;
+      var clipboard_y = cy * CLIPBOARD_SIZE;
+
+      for(var dy=0; dy<8; dy++){
+        for(var dx=0; dx<8; dx++){
+          var i = clipboard_d[d_cnt];
+          d_cnt++;
+
+          ctx.fillStyle = palettes[0][i];
+          ctx.fillRect(CLIPBOARD_START_X + 1 + clipboard_x + PREVIEW_SIZE * dx, CLIPBOARD_START_Y + 1 + clipboard_y + PREVIEW_SIZE * dy, PREVIEW_SIZE, PREVIEW_SIZE);
+        }
+      }
     }
   }
 }
@@ -43,7 +119,7 @@ function pick_pallete(){
 }
 
 function set_palette(){
-  var pos_x = pal_info['index'] * PALETTE_SIZE;
+  var index_x = pal_info['index'] * PALETTE_SIZE;
   var fill_x = PALETTE_START_X;
   var fill_y = PALETTE_START_Y;
   var fill_w = PALETTE_SIZE;
@@ -53,13 +129,232 @@ function set_palette(){
     ctx.fillStyle = palettes[0][i];
     ctx.fillRect(fill_x + fill_w * i, fill_y, fill_w, fill_h);
   }
+  drowBox(PALETTE_START_X + index_x, PALETTE_START_Y, PALETTE_SIZE - 1, PALETTE_SIZE - 1, EDITOR_BOX);
 
-  drowBox(PALETTE_START_X + pos_x, PALETTE_START_Y, PALETTE_SIZE - 1, PALETTE_SIZE - 1, EDITOR_BOX);
+  //var selected_x = pal_info['selected'] * PALETTE_SIZE;
+  //ctx.fillStyle = '#ffffff';
+  //ctx.fillRect(PALETTE_START_X + selected_x + 1, PALETTE_START_Y + 1, 3, 3);
+  $('#palette_info').html('bank:' + pal_info['bank']);
 }
 
+function check_palette_area(){
+  if(cur_info['x']>PALETTE_START_X
+    && cur_info['x']<PALETTE_SIZE * 4
+    && cur_info['y']>PALETTE_START_Y
+    && cur_info['y']<PALETTE_START_Y + PALETTE_SIZE
+    ){
+    return true;
+  }
+  return false;
+}
+
+function check_editor_area(){
+  if(cur_info['x']>EDITOR_START_X
+    && cur_info['x']<EDITOR_START_X + PIXEL_SIZE * init_form['edit_size_x']
+    && cur_info['y']>EDITOR_START_Y
+    && cur_info['y']<EDITOR_START_Y + PIXEL_SIZE * init_form['edit_size_y']
+    ){
+    return true;
+  }
+  return false;
+}
+
+function set_tips(key){
+  $('#tips_mes').html('Tips: ' + tips_mes[key]);
+}
+
+function check_clipboard_area(){
+  if(cur_info['x']>CLIPBOARD_START_X
+    && cur_info['x']<CLIPBOARD_START_X + CLIPBOARD_MAX_X
+    && cur_info['y']>CLIPBOARD_START_Y
+    && cur_info['y']<CLIPBOARD_START_Y + CLIPBOARD_MAX_Y
+    ){
+    return true;
+  }
+  return false;
+}
+
+function setHexForEditData(d){
+  var b = [];
+
+  for(var i=0; i<d.length; i++){
+    if(d[i]!=""){
+      b[i] = hex2bin(d[i]);
+    }
+  }
+
+  for(var i=0; i<8; i++){
+    for(var j=0; j<8; j++){
+      var low = b[i * 2].charAt(j);
+      var hi = b[(i * 2) + 1].charAt(j);
+
+      if(low=="0" && hi=="0"){
+        edit_d[j + i * 8] = 0;
+      }else if(low=="1" && hi=="0"){
+        edit_d[j + i * 8] = 1;
+      }else if(low=="0" && hi=="1"){
+        edit_d[j + i * 8] = 2;
+      }else{
+        edit_d[j + i * 8] = 3;
+      }
+    }
+  }
+}
+
+function setHexForClipboarData(d){
+  var b = [];
+
+  for(var i=0; i<d.length; i++){
+    if(d[i]!=""){
+      b[i] = hex2bin(d[i]);
+    }
+  }
+
+  for(var i=0; i<512; i++){
+    for(var j=0; j<8; j++){
+      var low = b[(i+8) * 2].charAt(j);
+      var hi = b[((i+8) * 2) + 1].charAt(j);
+
+      if(low=="0" && hi=="0"){
+        clipboard_d[j + i * 8] = 0;
+      }else if(low=="1" && hi=="0"){
+        clipboard_d[j + i * 8] = 1;
+      }else if(low=="0" && hi=="1"){
+        clipboard_d[j + i * 8] = 2;
+      }else{
+        clipboard_d[j + i * 8] = 3;
+      }
+    }
+  }
+  //console.log(clipboard_d);
+}
+
+function convEditDataToHex(lang){
+  var x = 0;
+  var low = "";
+  var hi = "";
+  var d = "";
+  for(var i=0; i<edit_d.length; i++){
+    var r = edit_d[i];
+    if(r==0){
+      low += "0";
+      hi += "0";
+    }else if(r==1){
+      low += "1";
+      hi += "0";
+    }else if(r==2){
+      low += "0";
+      hi += "1";
+    }else{
+      low += "1";
+      hi += "1";
+    }
+    x++;
+    if(x==8){
+      if(lang=='asm'){
+        d += "$" + toHex(parseInt(low,2)) + ",";
+        d += "$" + toHex(parseInt(hi,2)) + ",";
+      }else{
+        d += "0x" + toHex(parseInt(low,2)) + ",";
+        d += "0x" + toHex(parseInt(hi,2)) + ",";
+      }
+      low = "";
+      hi = "";
+      x = 0;
+    }
+  }
+  var s = "# editor_data \n";
+  if(lang=='asm'){
+    s += "# Sprite/Tile data for Assembler (RGBDS)\n";
+    s += "# Tiles:\n";
+    s += "db " + d + "\n";
+    s += "# TilesEnd:\n";
+  }else{
+    s += "# Sprite/Tile data for C/C++\n";
+    s += "# {\n";
+    s += d + "\n";
+    s += "# }\n";
+  }
+  s += "# editor_data_ended \n";
+  return (s);
+}
+
+function convClipboardDataToHex(lang){
+  var x = 0;
+  var hx = 0;
+  var low = "";
+  var hi = "";
+  var d = "";
+  var d2 = "";
+  //console.log(clipboard_d);
+  for(var i=0; i<clipboard_d.length; i++){
+    var r = clipboard_d[i];
+    //console.log(r);
+    if(r==0){
+      low += "0";
+      hi += "0";
+    }else if(r==1){
+      low += "1";
+      hi += "0";
+    }else if(r==2){
+      low += "0";
+      hi += "1";
+    }else{
+      low += "1";
+      hi += "1";
+    }
+    x++;
+    if(x==8){
+      if(lang=='asm'){
+        d += "$" + toHex(parseInt(low,2)) + ",";
+        d += "$" + toHex(parseInt(hi,2)) + ",";
+      }else{
+        d += "0x" + toHex(parseInt(low,2)) + ",";
+        d += "0x" + toHex(parseInt(hi,2)) + ",";
+      }
+      low = "";
+      hi = "";
+      x = 0;
+      hx++;
+      //console.log(d);
+    }
+    if(hx==8){
+      if(lang=='asm'){
+        d2 += "db " + d + "\n";
+      }else{
+        d2 += d + "\n";
+      }
+      low = "";
+      hi = "";
+      x = 0;
+      hx=0;
+      d="";
+      
+    }
+  }
+  var s = "";
+  s += "# clipboard_data \n";
+  if(lang=='asm'){
+    s += "# Sprite/Tile data for Assembler (RGBDS)\n";
+    s += "# Tiles:\n";
+    s += d2;
+    s += "# TilesEnd:\n";
+  }else{
+    s += "# Sprite/Tile data for C/C++\n";
+    s += "# {\n";
+    s += d2;
+    s += "# }\n";
+  }
+  s += "# clipboard_data_ended \n";
+  return (s);
+}
+
+
+/*
 function view_edit_info(){
   var dx = ('000' + cur_info['dx']).slice(-3);
   var dy = ('000' + cur_info['dy']).slice(-3);
 
   $('#edit_info').html('<span class="mono"> px:' + dx + " py:" + dy + "</span>");
 }
+*/

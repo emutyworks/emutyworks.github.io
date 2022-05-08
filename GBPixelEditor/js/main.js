@@ -27,41 +27,37 @@ window.onload = function(){
     mouse_down = true;
     mousePos(e);
 
-    if(cur_info['x']>PALETTE_START_X
-      && cur_info['x']<PALETTE_SIZE * 4
-      && cur_info['y']>PALETTE_START_Y
-      && cur_info['y']<PALETTE_START_Y + PALETTE_SIZE
-      ){
+    if(check_palette_area()){
       pick_pallete();
     }
-
-    if(cur_info['x']>EDITOR_START_X
-      && cur_info['x']<EDITOR_START_X + PIXEL_SIZE * MAX_PIXEL_X
-      && cur_info['y']>EDITOR_START_Y
-      && cur_info['y']<EDITOR_START_Y + PIXEL_SIZE * MAX_PIXEL_Y
-      ){
+    if(check_editor_area()){
       set_dot();
+    }
+    if(check_clipboard_area()){
+      edit_clipboard(e);
     }
   }
   function onMouseMove(e){
     mousePos(e);
+    var tips_mes = false;
     if(mouse_down){
-
-      if(cur_info['x']>PALETTE_START_X
-        && cur_info['x']<PALETTE_SIZE * 4
-        && cur_info['y']>PALETTE_START_Y
-        && cur_info['y']<PALETTE_START_Y + PALETTE_SIZE
-        ){
+      if(check_palette_area()){
         pick_pallete();
       }
-
-      if(cur_info['x']>EDITOR_START_X
-        && cur_info['x']<EDITOR_START_X + PIXEL_SIZE * MAX_PIXEL_X
-        && cur_info['y']>EDITOR_START_Y
-        && cur_info['y']<EDITOR_START_Y + PIXEL_SIZE * MAX_PIXEL_Y
-        ){
+    }
+    if(check_editor_area()){
+      if(mouse_down){
         set_dot();
       }
+      //pal_info['selected'] = edit_d[cur_info['dx'] + cur_info['dy'] * 8];
+      //set_palette();
+    }
+    if(check_clipboard_area()){
+      tips_mes = true;
+      edit_clipboard(e);
+    }
+    if(!tips_mes){
+      set_tips('reset');
     }
   }
   cursor.addEventListener('mouseup', onMouseUp, false);
@@ -76,16 +72,21 @@ window.onload = function(){
 
     var dx = parseInt((x - EDITOR_START_X) / PIXEL_SIZE);
     var dy = parseInt((y - EDITOR_START_Y) / PIXEL_SIZE);
+    var cx = parseInt((x - CLIPBOARD_START_X) / CLIPBOARD_SIZE);
+    var cy = parseInt((y - CLIPBOARD_START_Y) / CLIPBOARD_SIZE);
 
     cur_info = {
-      'org_x': org_x,
-      'org_y': org_y,
-      'x': x,
-      'y': y,
-      'dx': dx,
-      'dy': dy,
+      org_x: org_x,
+      org_y: org_y,
+      x: x,
+      y: y,
+      //editor
+      dx: dx,
+      dy: dy,
+      //clipboard
+      cx: cx,
+      cy: cy,
     };
-    view_edit_info();
   }
 
   /* data upload */
@@ -111,10 +112,9 @@ window.onload = function(){
             var comment = row.split("]");
             var key = comment[0].substr(comment[0].indexOf('[') + 1).trim();
             up_d[key] = comment[1].trim();
-          }else if(row.trim() == '# TilesEnd:'){
-            editor_data_ended = 1;
+          //}else if(row.trim() == '# TilesEnd:'){
+          //  editor_data_ended = 1;
           }
-
         }else if(row.charAt(0) == 'd' || row.charAt(0) == '0'){
           if(!editor_data_ended){
             editor_data += row.replace(/\s+/g, "");
@@ -127,30 +127,11 @@ window.onload = function(){
       editor_data = editor_data.replace(/\$/g, "");
       editor_data = editor_data.replace(/0x/g, "");
       var d = editor_data.split(',');
-      var b = [];
-      for(var i=0; i<d.length; i++){
-        if(d[i]!=""){
-          b[i] = hex2bin(d[i]);
-        }
-      }
 
-      for(var i=0; i<8; i++){
-        for(var j=0; j<8; j++){
-          var low = b[i * 2].charAt(j);
-          var hi = b[(i * 2) + 1].charAt(j);
-
-          if(low=="0" && hi=="0"){
-            edit_d[j + i * 8] = 0;
-          }else if(low=="1" && hi=="0"){
-            edit_d[j + i * 8] = 1;
-          }else if(low=="0" && hi=="1"){
-            edit_d[j + i * 8] = 2;
-          }else{
-            edit_d[j + i * 8] = 3;
-          }
-        }
-      }
-      set_download_data();
+      setHexForEditData(d);
+      setHexForClipboarData(d);
+      set_edit_data();
+      set_clipboard_data();
     };
 
     if(!String.prototype.trim){
@@ -171,59 +152,16 @@ function data_download(){
         
   $('#download').attr('download',filename);
 
-  var x = 0;
-  var y = 0;
-  var low = "";
-  var hi = "";
-  var d = "";
-  for(var i=0; i<edit_d.length; i++){
-    var r = edit_d[i];
-    if(r==0){
-      low += "0";
-      hi += "0";
-    }else if(r==1){
-      low += "1";
-      hi += "0";
-    }else if(r==2){
-      low += "0";
-      hi += "1";
-    }else{
-      low += "1";
-      hi += "1";
-    }
-    x++;
-    if(x==8){
-      if(lang=='asm'){
-        d += "$" + toHex(parseInt(low,2)) + ",";
-        d += "$" + toHex(parseInt(hi,2)) + ",";
-      }else{
-        d += "0x" + toHex(parseInt(low,2)) + ",";
-        d += "0x" + toHex(parseInt(hi,2)) + ",";
-      }
-      low = "";
-      hi = "";
-      x = 0;
-      y += 2;
-    }
-  }
-
+  var e = convEditDataToHex(lang);
+  var c = convClipboardDataToHex(lang);
   var content = '';
   content += "# [Create] " + dt.toString() + "\n";
   content += "# [FileName] " + $("#filename").val() + "\n";
   content += "# [Language] " + lang + "\n";
   content += "#\n";
-
-  if(lang=='asm'){
-    content += "# Sprite/Tile data for Assembler (RGBDS)\n";
-    content += "# Tiles:\n";
-    content += "db " + d + "\n";
-    content += "# TilesEnd:\n";  
-  }else{
-    content += "# Sprite/Tile data for C/C++\n";
-    content += "# {\n";
-    content += d + "\n";
-    content += "# }\n";  
-  }
+  content += e;
+  content += "#\n";
+  content += c;
 
   var blob = new Blob([ content ], { "type" : "text/plain" });
   
