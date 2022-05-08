@@ -48,15 +48,15 @@ function copyToEditor(){
 function copyToClipboard(){
   var clipboard_x = cur_info['cx'] * CLIPBOARD_SIZE;
   var clipboard_y = cur_info['cy'] * CLIPBOARD_SIZE;
-  var clipboard_d_p = cur_info['cx'] * 64 + cur_info['cy'] * 512;
+  var clipboard_d_p = cur_info['cx'] * 64 + cur_info['cy'] * CLIPBOARD_MAX_CX * 64;
 
   for(var dy=0; dy<8; dy++){
     for(var dx=0; dx<8; dx++){
       var i = edit_d[dx + dy * 8];
 
       clipboard_d[clipboard_d_p + dx + dy * 8] = i;
-      ctx.fillStyle = palettes[0][i];
-      ctx.fillRect(CLIPBOARD_START_X + 1 + clipboard_x + PREVIEW_SIZE * dx, CLIPBOARD_START_Y + 1 + clipboard_y + PREVIEW_SIZE * dy, PREVIEW_SIZE, PREVIEW_SIZE);
+      ctx.fillStyle = palettes[ pal_info['bank'] ][i];
+      ctx.fillRect(CLIPBOARD_START_X + 1 + clipboard_x + CLIPBOARD_DOT * dx, CLIPBOARD_START_Y + 1 + clipboard_y + CLIPBOARD_DOT * dy, CLIPBOARD_DOT, CLIPBOARD_DOT);
     }
   }
 }
@@ -67,9 +67,9 @@ function set_dot(){
   var i = pal_info['index'];
   
   edit_d[dx + dy * 8] = i;
-  ctx.fillStyle = palettes[0][i];
-  ctx.fillRect(EDITOR_START_X + 1 + PIXEL_SIZE * dx, EDITOR_START_Y + 1 + PIXEL_SIZE * dy, PIXEL_SIZE - 1, PIXEL_SIZE - 1);
-  ctx.fillRect(PREVIEW_START_X + 1 + PREVIEW_SIZE * dx, PREVIEW_START_Y + 1 + PREVIEW_SIZE * dy, PREVIEW_SIZE, PREVIEW_SIZE);
+  ctx.fillStyle = palettes[ pal_info['bank'] ][i];
+  ctx.fillRect(EDITOR_START_X + 1 + PIXEL_DOT * dx, EDITOR_START_Y + 1 + PIXEL_DOT * dy, PIXEL_DOT - 1, PIXEL_DOT - 1);
+  ctx.fillRect(PREVIEW_START_X + 1 + PREVIEW_DOT * dx, PREVIEW_START_Y + 1 + PREVIEW_DOT * dy, PREVIEW_DOT, PREVIEW_DOT);
 }
 
 function set_edit_data(){
@@ -77,9 +77,9 @@ function set_edit_data(){
     for(var dx=0; dx<init_form['edit_size_y']; dx++){
       var i = edit_d[dx + dy * init_form['edit_size_y']];
 
-      ctx.fillStyle = palettes[0][i];
-      ctx.fillRect(EDITOR_START_X + 1 + PIXEL_SIZE * dx, EDITOR_START_Y + 1 + PIXEL_SIZE * dy, PIXEL_SIZE - 1, PIXEL_SIZE - 1);
-      ctx.fillRect(PREVIEW_START_X + 1 + PREVIEW_SIZE * dx, PREVIEW_START_Y + 1 + PREVIEW_SIZE * dy, PREVIEW_SIZE, PREVIEW_SIZE);
+      ctx.fillStyle = palettes[ pal_info['bank'] ][i];
+      ctx.fillRect(EDITOR_START_X + 1 + PIXEL_DOT * dx, EDITOR_START_Y + 1 + PIXEL_DOT * dy, PIXEL_DOT - 1, PIXEL_DOT - 1);
+      ctx.fillRect(PREVIEW_START_X + 1 + PREVIEW_DOT * dx, PREVIEW_START_Y + 1 + PREVIEW_DOT * dy, PREVIEW_DOT, PREVIEW_DOT);
     }
   }
 }
@@ -97,8 +97,8 @@ function set_clipboard_data(){
           var i = clipboard_d[d_cnt];
           d_cnt++;
 
-          ctx.fillStyle = palettes[0][i];
-          ctx.fillRect(CLIPBOARD_START_X + 1 + clipboard_x + PREVIEW_SIZE * dx, CLIPBOARD_START_Y + 1 + clipboard_y + PREVIEW_SIZE * dy, PREVIEW_SIZE, PREVIEW_SIZE);
+          ctx.fillStyle = palettes[ pal_info['bank'] ][i];
+          ctx.fillRect(CLIPBOARD_START_X + 1 + clipboard_x + CLIPBOARD_DOT * dx, CLIPBOARD_START_Y + 1 + clipboard_y + CLIPBOARD_DOT * dy, CLIPBOARD_DOT, CLIPBOARD_DOT);
         }
       }
     }
@@ -106,11 +106,11 @@ function set_clipboard_data(){
 }
 
 function pick_pallete(){
-  if(cur_info['x']>0 && cur_info['x']<PALETTE_SIZE){
+  if(cur_info['x']>0 && cur_info['x']<PALETTE_DOT){
     pal_info['index'] = 0;
-  }else if(cur_info['x']>PALETTE_SIZE && cur_info['x']<PALETTE_SIZE * 2){
+  }else if(cur_info['x']>PALETTE_DOT && cur_info['x']<PALETTE_DOT * 2){
     pal_info['index'] = 1;
-  }else if(cur_info['x']>PALETTE_SIZE * 2 && cur_info['x']<PALETTE_SIZE * 3){
+  }else if(cur_info['x']>PALETTE_DOT * 2 && cur_info['x']<PALETTE_DOT * 3){
     pal_info['index'] = 2;
   }else{
     pal_info['index'] = 3;
@@ -119,19 +119,19 @@ function pick_pallete(){
 }
 
 function set_palette(){
-  var index_x = pal_info['index'] * PALETTE_SIZE;
+  var index_x = pal_info['index'] * PALETTE_DOT;
   var fill_x = PALETTE_START_X;
   var fill_y = PALETTE_START_Y;
-  var fill_w = PALETTE_SIZE;
-  var fill_h = PALETTE_SIZE;
+  var fill_w = PALETTE_DOT;
+  var fill_h = PALETTE_DOT;
   
   for(var i=0; i<4; i++){
-    ctx.fillStyle = palettes[0][i];
+    ctx.fillStyle = palettes[ pal_info['bank'] ][i];
     ctx.fillRect(fill_x + fill_w * i, fill_y, fill_w, fill_h);
   }
-  drowBox(PALETTE_START_X + index_x, PALETTE_START_Y, PALETTE_SIZE - 1, PALETTE_SIZE - 1, EDITOR_BOX);
+  drowBox(PALETTE_START_X + index_x, PALETTE_START_Y, PALETTE_DOT - 1, PALETTE_DOT - 1, EDITOR_BOX);
 
-  //var selected_x = pal_info['selected'] * PALETTE_SIZE;
+  //var selected_x = pal_info['selected'] * PALETTE_DOT;
   //ctx.fillStyle = '#ffffff';
   //ctx.fillRect(PALETTE_START_X + selected_x + 1, PALETTE_START_Y + 1, 3, 3);
   $('#palette_info').html('bank:' + pal_info['bank']);
@@ -139,9 +139,9 @@ function set_palette(){
 
 function check_palette_area(){
   if(cur_info['x']>PALETTE_START_X
-    && cur_info['x']<PALETTE_SIZE * 4
+    && cur_info['x']<PALETTE_DOT * 4
     && cur_info['y']>PALETTE_START_Y
-    && cur_info['y']<PALETTE_START_Y + PALETTE_SIZE
+    && cur_info['y']<PALETTE_START_Y + PALETTE_DOT
     ){
     return true;
   }
@@ -150,9 +150,9 @@ function check_palette_area(){
 
 function check_editor_area(){
   if(cur_info['x']>EDITOR_START_X
-    && cur_info['x']<EDITOR_START_X + PIXEL_SIZE * init_form['edit_size_x']
+    && cur_info['x']<EDITOR_START_X + PIXEL_DOT * init_form['edit_size_x']
     && cur_info['y']>EDITOR_START_Y
-    && cur_info['y']<EDITOR_START_Y + PIXEL_SIZE * init_form['edit_size_y']
+    && cur_info['y']<EDITOR_START_Y + PIXEL_DOT * init_form['edit_size_y']
     ){
     return true;
   }
@@ -174,178 +174,153 @@ function check_clipboard_area(){
   return false;
 }
 
-function setHexForEditData(d){
+function convHexData(dd){
   var b = [];
+  var d = [];
 
-  for(var i=0; i<d.length; i++){
-    if(d[i]!=""){
-      b[i] = hex2bin(d[i]);
+  for(var i=0; i<dd.length; i++){
+    if(dd[i]!=''){
+      b[i] = hex2bin(dd[i]);
     }
   }
 
-  for(var i=0; i<8; i++){
+  var dd_cnt = parseInt(dd.length/2);
+  for(var i=0; i<dd_cnt; i++){
     for(var j=0; j<8; j++){
       var low = b[i * 2].charAt(j);
       var hi = b[(i * 2) + 1].charAt(j);
 
-      if(low=="0" && hi=="0"){
-        edit_d[j + i * 8] = 0;
-      }else if(low=="1" && hi=="0"){
-        edit_d[j + i * 8] = 1;
-      }else if(low=="0" && hi=="1"){
-        edit_d[j + i * 8] = 2;
+      if(low=='0' && hi=='0'){
+        d[j + i * 8] = 0;
+      }else if(low=='1' && hi=='0'){
+        d[j + i * 8] = 1;
+      }else if(low=='0' && hi=='1'){
+        d[j + i * 8] = 2;
       }else{
-        edit_d[j + i * 8] = 3;
+        d[j + i * 8] = 3;
       }
     }
   }
-}
-
-function setHexForClipboarData(d){
-  var b = [];
-
-  for(var i=0; i<d.length; i++){
-    if(d[i]!=""){
-      b[i] = hex2bin(d[i]);
-    }
-  }
-
-  for(var i=0; i<512; i++){
-    for(var j=0; j<8; j++){
-      var low = b[(i+8) * 2].charAt(j);
-      var hi = b[((i+8) * 2) + 1].charAt(j);
-
-      if(low=="0" && hi=="0"){
-        clipboard_d[j + i * 8] = 0;
-      }else if(low=="1" && hi=="0"){
-        clipboard_d[j + i * 8] = 1;
-      }else if(low=="0" && hi=="1"){
-        clipboard_d[j + i * 8] = 2;
-      }else{
-        clipboard_d[j + i * 8] = 3;
-      }
-    }
-  }
-  //console.log(clipboard_d);
+  return d.concat();
 }
 
 function convEditDataToHex(lang){
   var x = 0;
-  var low = "";
-  var hi = "";
-  var d = "";
+  var low = '';
+  var hi = '';
+  var d = '';
   for(var i=0; i<edit_d.length; i++){
     var r = edit_d[i];
     if(r==0){
-      low += "0";
-      hi += "0";
+      low += '0';
+      hi += '0';
     }else if(r==1){
-      low += "1";
-      hi += "0";
+      low += '1';
+      hi += '0';
     }else if(r==2){
-      low += "0";
-      hi += "1";
+      low += '0';
+      hi += '1';
     }else{
-      low += "1";
-      hi += "1";
+      low += '1';
+      hi += '1';
     }
     x++;
     if(x==8){
       if(lang=='asm'){
-        d += "$" + toHex(parseInt(low,2)) + ",";
-        d += "$" + toHex(parseInt(hi,2)) + ",";
+        d += '$' + toHex(parseInt(low,2)) + ',';
+        d += '$' + toHex(parseInt(hi,2)) + ',';
       }else{
-        d += "0x" + toHex(parseInt(low,2)) + ",";
-        d += "0x" + toHex(parseInt(hi,2)) + ",";
+        d += '0x' + toHex(parseInt(low,2)) + ',';
+        d += '0x' + toHex(parseInt(hi,2)) + ',';
       }
-      low = "";
-      hi = "";
+      low = '';
+      hi = '';
       x = 0;
     }
   }
-  var s = "# editor_data \n";
+  var s = '# [editor_data]\n';
   if(lang=='asm'){
-    s += "# Sprite/Tile data for Assembler (RGBDS)\n";
-    s += "# Tiles:\n";
-    s += "db " + d + "\n";
-    s += "# TilesEnd:\n";
+    s += '# Sprite/Tile data for Assembler (RGBDS)\n';
+    s += '# Tiles:\n';
+    s += 'db ' + d + '\n';
+    s += '# TilesEnd:\n';
   }else{
-    s += "# Sprite/Tile data for C/C++\n";
-    s += "# {\n";
-    s += d + "\n";
-    s += "# }\n";
+    s += '# Sprite/Tile data for C/C++\n';
+    s += '# {\n';
+    s += d + '\n';
+    s += '# }\n';
   }
-  s += "# editor_data_ended \n";
+  s += '# [editor_data_ended]\n';
   return (s);
 }
 
 function convClipboardDataToHex(lang){
   var x = 0;
   var hx = 0;
-  var low = "";
-  var hi = "";
-  var d = "";
-  var d2 = "";
+  var low = '';
+  var hi = '';
+  var d = '';
+  var d2 = '';
   //console.log(clipboard_d);
   for(var i=0; i<clipboard_d.length; i++){
     var r = clipboard_d[i];
     //console.log(r);
     if(r==0){
-      low += "0";
-      hi += "0";
+      low += '0';
+      hi += '0';
     }else if(r==1){
-      low += "1";
-      hi += "0";
+      low += '1';
+      hi += '0';
     }else if(r==2){
-      low += "0";
-      hi += "1";
+      low += '0';
+      hi += '1';
     }else{
-      low += "1";
-      hi += "1";
+      low += '1';
+      hi += '1';
     }
     x++;
     if(x==8){
       if(lang=='asm'){
-        d += "$" + toHex(parseInt(low,2)) + ",";
-        d += "$" + toHex(parseInt(hi,2)) + ",";
+        d += '$' + toHex(parseInt(low,2)) + ',';
+        d += '$' + toHex(parseInt(hi,2)) + ',';
       }else{
-        d += "0x" + toHex(parseInt(low,2)) + ",";
-        d += "0x" + toHex(parseInt(hi,2)) + ",";
+        d += '0x' + toHex(parseInt(low,2)) + ',';
+        d += '0x' + toHex(parseInt(hi,2)) + ',';
       }
-      low = "";
-      hi = "";
+      low = '';
+      hi = '';
       x = 0;
       hx++;
       //console.log(d);
     }
     if(hx==8){
       if(lang=='asm'){
-        d2 += "db " + d + "\n";
+        d2 += 'db ' + d + '\n';
       }else{
-        d2 += d + "\n";
+        d2 += d + '\n';
       }
-      low = "";
-      hi = "";
+      low = '';
+      hi = '';
       x = 0;
       hx=0;
-      d="";
+      d='';
       
     }
   }
-  var s = "";
-  s += "# clipboard_data \n";
+  var s = '';
+  s += '# [clipboard_data]\n';
   if(lang=='asm'){
-    s += "# Sprite/Tile data for Assembler (RGBDS)\n";
-    s += "# Tiles:\n";
+    s += '# Sprite/Tile data for Assembler (RGBDS)\n';
+    s += '# Tiles:\n';
     s += d2;
-    s += "# TilesEnd:\n";
+    s += '# TilesEnd:\n';
   }else{
-    s += "# Sprite/Tile data for C/C++\n";
-    s += "# {\n";
+    s += '# Sprite/Tile data for C/C++\n';
+    s += '# {\n';
     s += d2;
-    s += "# }\n";
+    s += '# }\n';
   }
-  s += "# clipboard_data_ended \n";
+  s += '# [clipboard_data_ended]\n';
   return (s);
 }
 

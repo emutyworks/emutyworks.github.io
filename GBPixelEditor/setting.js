@@ -29,5 +29,3 @@ var pal_info = {
   bank: 0,
   selected: 0,
 };
-
-

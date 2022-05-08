@@ -70,8 +70,8 @@ window.onload = function(){
     var x = org_x - OFFSET_X;
     var y = org_y - OFFSET_Y;
 
-    var dx = parseInt((x - EDITOR_START_X) / PIXEL_SIZE);
-    var dy = parseInt((y - EDITOR_START_Y) / PIXEL_SIZE);
+    var dx = parseInt((x - EDITOR_START_X) / PIXEL_DOT);
+    var dy = parseInt((y - EDITOR_START_Y) / PIXEL_DOT);
     var cx = parseInt((x - CLIPBOARD_START_X) / CLIPBOARD_SIZE);
     var cy = parseInt((y - CLIPBOARD_START_Y) / CLIPBOARD_SIZE);
 
@@ -98,38 +98,47 @@ window.onload = function(){
 
     reader.onload = function(){
       var up_text = reader.result;
-      var up_array = up_text.split("\n");
+      var up_array = up_text.split('\n');
 
       var up_d = new Array();
-      var editor_data = "";
-      var editor_data_ended = null;
+      var editor_data = '';
+      var editor_data_ended = false;
+      var clipboard_data = '';
+      var clipboard_data_ended = false;
 
       for(var i=0; i < up_array.length; i++){
         var row = up_array[i];
 
         if(row.charAt(0) == '#'){
-          if(row.indexOf('[') != -1){
-            var comment = row.split("]");
+          if(row.trim() == '# editor_data_ended' || row.trim() == '# [editor_data_ended]'){
+            editor_data_ended = true;
+          }else if(row.trim() == '# clipboard_data_ended' || row.trim() == '# [clipboard_data_ended]'){
+            clipboard_data_ended = true;
+          }else if(row.indexOf('[') != -1){
+            var comment = row.split(']');
             var key = comment[0].substr(comment[0].indexOf('[') + 1).trim();
             up_d[key] = comment[1].trim();
-          //}else if(row.trim() == '# TilesEnd:'){
-          //  editor_data_ended = 1;
           }
         }else if(row.charAt(0) == 'd' || row.charAt(0) == '0'){
           if(!editor_data_ended){
-            editor_data += row.replace(/\s+/g, "");
+            editor_data += row.replace(/\s+/g, '');
+          }else if(!clipboard_data_ended){
+            clipboard_data += row.replace(/\s+/g, '');
           }
         }
 
       }
       $('#filename').val(up_d['FileName']);
-      editor_data = editor_data.replace(/db/g, "");
-      editor_data = editor_data.replace(/\$/g, "");
-      editor_data = editor_data.replace(/0x/g, "");
-      var d = editor_data.split(',');
+      editor_data = editor_data.replace(/db/g,'').replace(/\$/g,'').replace(/0x/g,'');
+      var e = editor_data.split(',');
+      clipboard_data = clipboard_data.replace(/db/g,'').replace(/\$/g,'').replace(/0x/g,'');
+      var c = clipboard_data.split(',');
 
-      setHexForEditData(d);
-      setHexForClipboarData(d);
+      edit_d = convHexData(e);
+      var clipboard_d_tmp = convHexData(c);
+      for(var i=0; i<clipboard_d_tmp.length; i++){
+        clipboard_d[i] = clipboard_d_tmp[i];
+      }
       set_edit_data();
       set_clipboard_data();
     };
@@ -147,7 +156,7 @@ window.onload = function(){
  */
 function data_download(){
   var dt = new Date();
-  var filename = $("#filename").val() + '.txt';
+  var filename = $('#filename').val() + '.txt';
   var lang = $('input[name=download_lang]:checked').val();
         
   $('#download').attr('download',filename);
@@ -155,20 +164,20 @@ function data_download(){
   var e = convEditDataToHex(lang);
   var c = convClipboardDataToHex(lang);
   var content = '';
-  content += "# [Create] " + dt.toString() + "\n";
-  content += "# [FileName] " + $("#filename").val() + "\n";
-  content += "# [Language] " + lang + "\n";
-  content += "#\n";
+  content += '# [Create] ' + dt.toString() + '\n';
+  content += '# [FileName] ' + $('#filename').val() + '\n';
+  content += '# [Language] ' + lang + '\n';
+  content += '#\n';
   content += e;
-  content += "#\n";
+  content += '#\n';
   content += c;
 
-  var blob = new Blob([ content ], { "type" : "text/plain" });
+  var blob = new Blob([ content ], {type:'text/plain'});
   
   if(window.navigator.msSaveBlob){
     window.navigator.msSaveBlob(blob, filename); 
   }else{
-    document.getElementById("download").href = window.URL.createObjectURL(blob);
+    document.getElementById('download').href = window.URL.createObjectURL(blob);
   }
 }
 

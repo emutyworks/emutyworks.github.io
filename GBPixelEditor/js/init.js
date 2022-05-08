@@ -6,15 +6,16 @@ Copyright (c) 2022 emutyworks
 Released under the MIT license
 https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 */
-var PIXEL_SIZE = 16;
-var PALETTE_SIZE = 16;
-var PREVIEW_SIZE = 4;
+var PIXEL_DOT = 16;
+var PALETTE_DOT = 16;
+var PREVIEW_DOT = 4;
+var CLIPBOARD_DOT = 2;
 
 var OFFSET_X = 8;
 var OFFSET_Y = 35;
-var EDITOR_LINE = "#c0c000";
-var EDITOR_LINE2 = "#808080";
-var EDITOR_BOX = "#ff0000";
+var EDITOR_LINE = '#c0c000';
+var EDITOR_LINE2 = '#808080';
+var EDITOR_BOX = '#ff0000';
 var EDITOR_START_X = 80;
 var EDITOR_START_Y = 55;
 var PREVIEW_START_X = 0;
@@ -22,15 +23,15 @@ var PREVIEW_START_Y = 0;
 var PALETTE_START_X = 0;
 var PALETTE_START_Y = EDITOR_START_Y;
 
-var CLIPBOARD_MAX_CX = 8;
+var CLIPBOARD_MAX_CX = 16;
 var CLIPBOARD_MAX_CY = 8;
-var CLIPBOARD_SIZE = PREVIEW_SIZE * 8 + 1;
+var CLIPBOARD_SIZE = CLIPBOARD_DOT * 8 + 1;
 var CLIPBOARD_MAX_X = CLIPBOARD_SIZE * CLIPBOARD_MAX_CX;
 var CLIPBOARD_MAX_Y = CLIPBOARD_SIZE * CLIPBOARD_MAX_CY;
-var CLIPBOARD_START_X = EDITOR_START_X + 16 + PIXEL_SIZE * init_form['edit_size_x'];
+var CLIPBOARD_START_X = EDITOR_START_X + 16 + PIXEL_DOT * init_form['edit_size_x'];
 var CLIPBOARD_START_Y = EDITOR_START_Y;
 
-var VIEW_MAX_X = EDITOR_START_X + 16 + 3 + CLIPBOARD_MAX_X + PIXEL_SIZE * init_form['edit_size_x'];
+var VIEW_MAX_X = EDITOR_START_X + 16 + 3 + CLIPBOARD_MAX_X + PIXEL_DOT * init_form['edit_size_x'];
 var VIEW_MAX_Y = EDITOR_START_Y + 3 + CLIPBOARD_MAX_Y;
 
 var view = null;
@@ -63,13 +64,13 @@ var cur_info = {
 };
 
 var editor_info = {
-  w: PIXEL_SIZE * init_form['edit_size_x'],
-  h: PIXEL_SIZE * init_form['edit_size_y'],
+  w: PIXEL_DOT * init_form['edit_size_x'],
+  h: PIXEL_DOT * init_form['edit_size_y'],
 };
 
 var preview_info = {
-  w: PREVIEW_SIZE * init_form['edit_size_x'],
-  h: PREVIEW_SIZE * init_form['edit_size_y'],
+  w: PREVIEW_DOT * init_form['edit_size_x'],
+  h: PREVIEW_DOT * init_form['edit_size_y'],
 };
 
 var tips_mes = {
@@ -101,8 +102,6 @@ function init_clipboard(){
   var fill_w = CLIPBOARD_MAX_X;
   var fill_h = CLIPBOARD_MAX_Y;
 
-  //ctx.fillStyle = palettes[0][0];
-  //ctx.fillRect(fill_x, fill_y, fill_w, fill_h);
   set_clipboard_line();
   drowBox(fill_x, fill_y, fill_w, fill_h, EDITOR_BOX);
   set_clipboard_data();
@@ -115,10 +114,10 @@ function set_clipboard_line(){
   var fill_h = CLIPBOARD_MAX_Y;
 
   ctx.fillStyle = EDITOR_LINE2;
-  for(var i=1; i<8; i++){
+  for(var i=1; i<CLIPBOARD_MAX_CX; i++){
     ctx.fillRect(fill_x + CLIPBOARD_SIZE * i, fill_y, 1, fill_h);
   }
-  for(var i=1; i<8; i++){
+  for(var i=1; i<CLIPBOARD_MAX_CY; i++){
     ctx.fillRect(fill_x, fill_y + CLIPBOARD_SIZE * i, fill_w, 1);
   }
 }
@@ -129,20 +128,20 @@ function init_editor(){
   var fill_w = editor_info['w'];
   var fill_h = editor_info['h'];
 
-  ctx.fillStyle = palettes[0][0];
+  ctx.fillStyle = palettes[ pal_info['bank'] ][0];
   ctx.fillRect(fill_x, fill_y, fill_w, fill_h);
 
   ctx.fillStyle = EDITOR_LINE;
   for(var i=0; i<init_form['edit_size_x']; i++){
-    ctx.fillRect(fill_x + PIXEL_SIZE * i, fill_y, 1, fill_h);
+    ctx.fillRect(fill_x + PIXEL_DOT * i, fill_y, 1, fill_h);
   }
   for(var i=0; i<init_form['edit_size_y']; i++){
-    ctx.fillRect(fill_x, fill_y + PIXEL_SIZE * i, fill_w, 1);
+    ctx.fillRect(fill_x, fill_y + PIXEL_DOT * i, fill_w, 1);
   }
   drowBox(fill_x, fill_y, fill_w, fill_h, EDITOR_BOX);
   ctx.fillStyle = EDITOR_LINE2;
-  ctx.fillRect(fill_x + PIXEL_SIZE * 4, fill_y, 1, fill_h);
-  ctx.fillRect(fill_x, fill_y + PIXEL_SIZE * 4, fill_w, 1);
+  ctx.fillRect(fill_x + PIXEL_DOT * 4, fill_y, 1, fill_h);
+  ctx.fillRect(fill_x, fill_y + PIXEL_DOT * 4, fill_w, 1);
 }
 
 function init_preview(){
