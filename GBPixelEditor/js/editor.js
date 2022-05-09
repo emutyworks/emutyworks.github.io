@@ -102,9 +102,18 @@ function set_dot(){
 }
 
 function set_history(d){
-  history_d.unshift(d.concat());
-  history_d.pop();
-  set_history_data();
+  var f = false;
+  for(var i=0; i<8*8; i++){
+    if(d[i]!=0){
+      f = true;
+      break;
+    }
+  }
+  if(f){
+    history_d.unshift(d.concat());
+    history_d.pop();
+    set_history_data();
+  }
 }
 
 function set_history_data(){
