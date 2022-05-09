@@ -43,15 +43,13 @@ function edit_clipboard(e){
 function copyToEditor(){
   var clipboard_d_p = cur_info['cx'] * 64 + cur_info['cy'] * CLIPBOARD_MAX_CX * 64;
 
+  set_history(edit_d);
   for(var dy=0; dy<8; dy++){
     for(var dx=0; dx<8; dx++){
       edit_d[dx + dy * 8] = clipboard_d[ clipboard_d_p + dx + dy * 8];
     }
   }
   set_edit_data();
-  history_d.unshift(edit_d.concat());
-  history_d.pop();
-  set_history_data();
 }
 
 function copyToClipboard(){
@@ -69,9 +67,7 @@ function copyToClipboard(){
       ctx.fillRect(CLIPBOARD_START_X + 1 + clipboard_x + CLIPBOARD_DOT * dx, CLIPBOARD_START_Y + 1 + clipboard_y + CLIPBOARD_DOT * dy, CLIPBOARD_DOT, CLIPBOARD_DOT);
     }
   }
-  history_d.unshift(d.concat());
-  history_d.pop();
-  set_history_data();
+  set_history(d);
 }
 
 function pick_history(){
@@ -102,9 +98,15 @@ function set_dot(){
   ctx.fillRect(PREVIEW_START_X + 1 + PREVIEW_DOT * dx, PREVIEW_START_Y + 1 + PREVIEW_DOT * dy, PREVIEW_DOT, PREVIEW_DOT);
 }
 
+function set_history(d){
+  history_d.unshift(d.concat());
+  history_d.pop();
+  set_history_data();
+}
+
 function set_history_data(){
-  for(var hx=0; hx<16; hx++){
-    var history_x = (HISTORY_DOT * 8 + 1) * hx;
+  for(var hx=0; hx<HISTORY_MAX_X; hx++){
+    var history_x = HISTORY_SIZE * hx;
     for(var dy=0; dy<8; dy++){
       for(var dx=0; dx<8; dx++){
         var i = history_d[hx][ dx + dy * 8];
