@@ -49,10 +49,9 @@ function copyToEditor(){
     }
   }
   set_edit_data();
-  history_d.unshift(edit_d.slice());
+  history_d.unshift(edit_d.concat());
   history_d.pop();
   set_history_data();
-  //console.log(history_d);
 }
 
 function copyToClipboard(){
@@ -64,15 +63,14 @@ function copyToClipboard(){
     for(var dx=0; dx<8; dx++){
       var i = edit_d[dx + dy * 8];
 
-      d[dx + dy * 8] = i;
+      d[dx + dy * 8] = clipboard_d[clipboard_d_p + dx + dy * 8];
       clipboard_d[clipboard_d_p + dx + dy * 8] = i;
       ctx.fillStyle = palettes[ pal_info['bank'] ][i];
       ctx.fillRect(CLIPBOARD_START_X + 1 + clipboard_x + CLIPBOARD_DOT * dx, CLIPBOARD_START_Y + 1 + clipboard_y + CLIPBOARD_DOT * dy, CLIPBOARD_DOT, CLIPBOARD_DOT);
     }
   }
-  history_d.unshift(d.slice());
+  history_d.unshift(d.concat());
   history_d.pop();
-  console.log(history_d);
   set_history_data();
 }
 
@@ -87,7 +85,7 @@ function pick_history(){
       flag = edit_confirm_alert('Do you want to copy a history to a editor?');
     }
     if(flag){
-      edit_d = history_d[ cur_info['hx'] ].slice();
+      edit_d = history_d[ cur_info['hx'] ].concat();
       set_edit_data();
     }
   }
@@ -176,10 +174,6 @@ function set_palette(){
     ctx.fillRect(fill_x + fill_w * i, fill_y, fill_w, fill_h);
   }
   drowBox(PALETTE_START_X + index_x, PALETTE_START_Y, PALETTE_DOT - 1, PALETTE_DOT - 1, EDITOR_BOX);
-
-  //var selected_x = pal_info['selected'] * PALETTE_DOT;
-  //ctx.fillStyle = '#ffffff';
-  //ctx.fillRect(PALETTE_START_X + selected_x + 1, PALETTE_START_Y + 1, 3, 3);
   $('#palette_info').html('Bank:' + pal_info['bank']);
 }
 
@@ -388,12 +382,3 @@ function set_edit_alert(){
     edit_alert = false;
   }
 }
-
-/*
-function view_edit_info(){
-  var dx = ('000' + cur_info['dx']).slice(-3);
-  var dy = ('000' + cur_info['dy']).slice(-3);
-
-  $('#edit_info').html('<span class="mono"> px:' + dx + " py:" + dy + "</span>");
-}
-*/

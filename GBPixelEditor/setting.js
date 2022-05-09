@@ -27,5 +27,4 @@ var palettes = {
 var pal_info = {
   index: 3,
   bank: 0,
-  selected: 0,
 };

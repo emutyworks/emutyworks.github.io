@@ -55,8 +55,6 @@ window.onload = function(){
       if(mouse_down){
         set_dot();
       }
-      //pal_info['selected'] = edit_d[cur_info['dx'] + cur_info['dy'] * 8];
-      //set_palette();
     }
     if(check_clipboard_area()){
       tips_mes = true;

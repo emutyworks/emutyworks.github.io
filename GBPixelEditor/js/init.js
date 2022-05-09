@@ -32,6 +32,8 @@ var CLIPBOARD_START_X = EDITOR_START_X + 16 + PIXEL_DOT * init_form['edit_size_x
 var CLIPBOARD_START_Y = EDITOR_START_Y;
 var HISTORY_START_X = CLIPBOARD_START_X;
 var HISTORY_START_Y = 28;
+var HISTORY_MAX_X = 16;
+var HISTORY_SIZE = HISTORY_DOT * 8 + 1;
 
 var VIEW_MAX_X = EDITOR_START_X + 16 + 3 + CLIPBOARD_MAX_X + PIXEL_DOT * init_form['edit_size_x'];
 var VIEW_MAX_Y = EDITOR_START_Y + 3 + CLIPBOARD_MAX_Y;
@@ -52,9 +54,9 @@ var clipboard_d = new Array(8 * 8 * CLIPBOARD_MAX_CX * CLIPBOARD_MAX_CY);
 for(var i=0; i<clipboard_d.length; i++){
   clipboard_d[i] = 0;
 }
-var history_d = new Array(16);
+var history_d = new Array(HISTORY_MAX_X);
 for(var i=0; i<16; i++){
-  history_d[i] = edit_d.slice();
+  history_d[i] = edit_d.concat();
 }
 
 var cur_info = {
@@ -109,8 +111,8 @@ function init_view(){
 function init_history(){
   var fill_x = HISTORY_START_X;
   var fill_y = HISTORY_START_Y;
-  var fill_w = (HISTORY_DOT * 8 + 1) * 16;
-  var fill_h = HISTORY_DOT * 8 + 1;
+  var fill_w = HISTORY_SIZE * HISTORY_MAX_X;
+  var fill_h = HISTORY_SIZE;
 
   set_history_line();
   drowBox(fill_x, fill_y, fill_w, fill_h, EDITOR_BOX);
@@ -120,11 +122,11 @@ function init_history(){
 function set_history_line(){
   var fill_x = HISTORY_START_X;
   var fill_y = HISTORY_START_Y;
-  var fill_w = HISTORY_DOT * 8 + 1;
-  var fill_h = HISTORY_DOT * 8 + 1;
+  var fill_w = HISTORY_SIZE;
+  var fill_h = HISTORY_SIZE;
 
   ctx.fillStyle = EDITOR_LINE2;
-  for(var i=1; i<16; i++){
+  for(var i=1; i<HISTORY_MAX_X; i++){
     ctx.fillRect(fill_x + fill_w * i, fill_y, 1, fill_h);
   }
 }
