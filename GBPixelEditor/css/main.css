@@ -7,19 +7,24 @@ Released under the MIT license
 https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 */
 body, input, select{
-  font-family: helvetica, arial;
+  font-family: Arial, sans-serif;
   font-size: 9pt;
   padding: 0px 0px 0px 0px;
   cursor: default;
-}
-.mono{
-  font-family: Courier;
-  font-size: 9pt;
 }
 .radio{
   position: relative;
   top: 3px;
   transform:scale(1.0);
+}
+.checkbox{
+  position: relative;
+  top: 3px;
+  transform:scale(1.0);
+}
+.mono{
+  font-family: Courier;
+  font-size: 9pt;
 }
 #view{
   position: absolute;
@@ -35,25 +40,33 @@ body, input, select{
 }
 #tips_mes{
   font-size: 8pt;
-  position: absolute;
-  left: 233px;
-  top: 75px;
+  position: relative;
+  left: 0px;
+  top: 215px;
+}
+#github_link{
+  font-size: 8pt;
+  position: relative;
+  left: 0px;
+  top: 215px;
 }
 #palette_info{
   font-size: 8pt;
   position: absolute;
+  z-index: 2;
   left: 8px;
-  top: 75px;
+  top: 110px;
+}
+#edit_info{
+  font-size: 8pt;
+  position: absolute;
+  z-index: 2;
+  left: 229px;
+  top: 225px;
 }
 
 #filename{
   width: 100px;
-}
-#github_link{
-  font-size: 9pt;
-  position: relative;
-  left: 0px;
-  top: 230px;
 }
 hr{
   height: 1px;

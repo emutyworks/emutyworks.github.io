@@ -36,6 +36,9 @@ window.onload = function(){
     if(check_clipboard_area()){
       edit_clipboard(e);
     }
+    if(check_history_area()){
+      pick_history(e);
+    }
   }
   function onMouseMove(e){
     mousePos(e);
@@ -44,6 +47,9 @@ window.onload = function(){
       if(check_palette_area()){
         pick_pallete();
       }
+    }
+    if(check_history_area()){
+      pick_history(e);
     }
     if(check_editor_area()){
       if(mouse_down){
@@ -74,6 +80,7 @@ window.onload = function(){
     var dy = parseInt((y - EDITOR_START_Y) / PIXEL_DOT);
     var cx = parseInt((x - CLIPBOARD_START_X) / CLIPBOARD_SIZE);
     var cy = parseInt((y - CLIPBOARD_START_Y) / CLIPBOARD_SIZE);
+    var hx = parseInt((x - HISTORY_START_X) / (HISTORY_DOT * 8 + 1));
 
     cur_info = {
       org_x: org_x,
@@ -86,6 +93,8 @@ window.onload = function(){
       //clipboard
       cx: cx,
       cy: cy,
+      //history
+      hx: hx,
     };
   }
 

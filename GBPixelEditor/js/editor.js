@@ -15,13 +15,21 @@ function edit_clipboard(e){
 
   if(mouse_down){
     if(e.shiftKey){
-      flag = edit_confirm_alert('Do you want to copy a editor to a clipboard?');
+      if(edit_alert){
+        flag = true;
+      }else{
+        flag = edit_confirm_alert('Do you want to copy a editor to a clipboard?');
+      }
       if(flag){
         copyToClipboard();
         set_clipboard_line();
       }
     }else{
-      flag = edit_confirm_alert('Do you want to copy a clipboard to a editor?');
+      if(edit_alert){
+        flag = true;
+      }else{
+        flag = edit_confirm_alert('Do you want to copy a clipboard to a editor?');
+      }
       if(flag){
         copyToEditor();
         set_clipboard_line();
@@ -33,8 +41,6 @@ function edit_clipboard(e){
 }
 
 function copyToEditor(){
-  var clipboard_x = cur_info['cx'] * CLIPBOARD_SIZE;
-  var clipboard_y = cur_info['cy'] * CLIPBOARD_SIZE;
   var clipboard_d_p = cur_info['cx'] * 64 + cur_info['cy'] * CLIPBOARD_MAX_CX * 64;
 
   for(var dy=0; dy<8; dy++){
@@ -43,20 +49,45 @@ function copyToEditor(){
     }
   }
   set_edit_data();
+  history_d.unshift(edit_d.slice());
+  history_d.pop();
+  set_history_data();
+  //console.log(history_d);
 }
 
 function copyToClipboard(){
   var clipboard_x = cur_info['cx'] * CLIPBOARD_SIZE;
   var clipboard_y = cur_info['cy'] * CLIPBOARD_SIZE;
   var clipboard_d_p = cur_info['cx'] * 64 + cur_info['cy'] * CLIPBOARD_MAX_CX * 64;
-
+  var d = [];
   for(var dy=0; dy<8; dy++){
     for(var dx=0; dx<8; dx++){
       var i = edit_d[dx + dy * 8];
 
+      d[dx + dy * 8] = i;
       clipboard_d[clipboard_d_p + dx + dy * 8] = i;
       ctx.fillStyle = palettes[ pal_info['bank'] ][i];
       ctx.fillRect(CLIPBOARD_START_X + 1 + clipboard_x + CLIPBOARD_DOT * dx, CLIPBOARD_START_Y + 1 + clipboard_y + CLIPBOARD_DOT * dy, CLIPBOARD_DOT, CLIPBOARD_DOT);
+    }
+  }
+  history_d.unshift(d);
+  history_d.pop();
+  set_history_data();
+}
+
+function pick_history(){
+  var history_x = cur_info['hx'] * (HISTORY_DOT * 8 + 1);
+  set_history_line();
+  drowBox(HISTORY_START_X + history_x, HISTORY_START_Y, HISTORY_DOT * 8 + 1, HISTORY_DOT * 8 + 1, EDITOR_BOX);
+  if(mouse_down){
+    if(edit_alert){
+      flag = true;
+    }else{
+      flag = edit_confirm_alert('Do you want to copy a history to a editor?');
+    }
+    if(flag){
+      edit_d = history_d[ cur_info['hx'] ].slice();
+      set_edit_data();
     }
   }
 }
@@ -70,6 +101,20 @@ function set_dot(){
   ctx.fillStyle = palettes[ pal_info['bank'] ][i];
   ctx.fillRect(EDITOR_START_X + 1 + PIXEL_DOT * dx, EDITOR_START_Y + 1 + PIXEL_DOT * dy, PIXEL_DOT - 1, PIXEL_DOT - 1);
   ctx.fillRect(PREVIEW_START_X + 1 + PREVIEW_DOT * dx, PREVIEW_START_Y + 1 + PREVIEW_DOT * dy, PREVIEW_DOT, PREVIEW_DOT);
+}
+
+function set_history_data(){
+  for(var hx=0; hx<16; hx++){
+    var history_x = (HISTORY_DOT * 8 + 1) * hx;
+    for(var dy=0; dy<8; dy++){
+      for(var dx=0; dx<8; dx++){
+        var i = history_d[hx][ dx + dy * 8];
+
+        ctx.fillStyle = palettes[ pal_info['bank'] ][i];
+        ctx.fillRect(HISTORY_START_X + 1 + history_x + HISTORY_DOT * dx, HISTORY_START_Y + 1 + HISTORY_DOT * dy, HISTORY_DOT, HISTORY_DOT);
+      }
+    }
+  }
 }
 
 function set_edit_data(){
@@ -134,7 +179,7 @@ function set_palette(){
   //var selected_x = pal_info['selected'] * PALETTE_DOT;
   //ctx.fillStyle = '#ffffff';
   //ctx.fillRect(PALETTE_START_X + selected_x + 1, PALETTE_START_Y + 1, 3, 3);
-  $('#palette_info').html('bank:' + pal_info['bank']);
+  $('#palette_info').html('Bank:' + pal_info['bank']);
 }
 
 function check_palette_area(){
@@ -142,6 +187,17 @@ function check_palette_area(){
     && cur_info['x']<PALETTE_DOT * 4
     && cur_info['y']>PALETTE_START_Y
     && cur_info['y']<PALETTE_START_Y + PALETTE_DOT
+    ){
+    return true;
+  }
+  return false;
+}
+
+function check_history_area(){
+  if(cur_info['x']>HISTORY_START_X
+    && cur_info['x']<HISTORY_START_X + (HISTORY_DOT * 8 + 1) * 16
+    && cur_info['y']>HISTORY_START_Y
+    && cur_info['y']<HISTORY_START_Y + HISTORY_DOT * 8 + 1
     ){
     return true;
   }
@@ -324,6 +380,13 @@ function convClipboardDataToHex(lang){
   return (s);
 }
 
+function set_edit_alert(){
+  if($('#edit_alert').prop('checked')){
+    edit_alert = true;
+  }else{
+    edit_alert = false;
+  }
+}
 
 /*
 function view_edit_info(){
