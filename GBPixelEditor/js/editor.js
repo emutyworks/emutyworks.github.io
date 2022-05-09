@@ -81,7 +81,10 @@ function pick_history(){
       flag = edit_confirm_alert('Do you want to copy a history to a editor?');
     }
     if(flag){
+      var d = [];
+      d = edit_d.concat();
       edit_d = history_d[ cur_info['hx'] ].concat();
+      set_history(d);
       set_edit_data();
     }
   }
