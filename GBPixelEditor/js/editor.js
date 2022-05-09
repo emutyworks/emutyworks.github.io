@@ -70,8 +70,9 @@ function copyToClipboard(){
       ctx.fillRect(CLIPBOARD_START_X + 1 + clipboard_x + CLIPBOARD_DOT * dx, CLIPBOARD_START_Y + 1 + clipboard_y + CLIPBOARD_DOT * dy, CLIPBOARD_DOT, CLIPBOARD_DOT);
     }
   }
-  history_d.unshift(d);
+  history_d.unshift(d.slice());
   history_d.pop();
+  console.log(history_d);
   set_history_data();
 }
 

@@ -54,7 +54,7 @@ for(var i=0; i<clipboard_d.length; i++){
 }
 var history_d = new Array(16);
 for(var i=0; i<16; i++){
-  history_d[i] = edit_d;
+  history_d[i] = edit_d.slice();
 }
 
 var cur_info = {
