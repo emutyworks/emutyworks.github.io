@@ -12,7 +12,6 @@ var init_form = {
   edit_size_x: 8,
   edit_size_y: 8,
 };
-
 var palettes = {
   0:{
     // Game Boy
@@ -28,3 +27,6 @@ var pal_info = {
   index: 3,
   bank: 0,
 };
+
+/* Do not change from here */
+var tips_flag = false;

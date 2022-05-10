@@ -63,6 +63,8 @@ body, input, select{
   z-index: 2;
   left: 229px;
   top: 225px;
+  width: 270px;
+  height: 22px;
 }
 
 #filename{

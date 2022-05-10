@@ -11,7 +11,6 @@ function edit_clipboard(e){
   var clipboard_y = cur_info['cy'] * CLIPBOARD_SIZE;
   set_clipboard_line();
   drowBox(CLIPBOARD_START_X + clipboard_x, CLIPBOARD_START_Y + clipboard_y, CLIPBOARD_SIZE, CLIPBOARD_SIZE, EDITOR_BOX);
-  set_tips('clipboard');
 
   if(mouse_down){
     if(e.shiftKey){
@@ -35,8 +34,7 @@ function edit_clipboard(e){
         set_clipboard_line();
       }
     }
-    mouse_down = false;
-    document.activeElement.blur();
+    exit_edit();
   }
 }
 
@@ -74,6 +72,7 @@ function pick_history(){
   var history_x = cur_info['hx'] * (HISTORY_DOT * 8 + 1);
   set_history_line();
   drowBox(HISTORY_START_X + history_x, HISTORY_START_Y, HISTORY_DOT * 8 + 1, HISTORY_DOT * 8 + 1, EDITOR_BOX);
+
   if(mouse_down){
     if(edit_alert){
       flag = true;
@@ -81,13 +80,17 @@ function pick_history(){
       flag = edit_confirm_alert('Do you want to copy a history to a editor?');
     }
     if(flag){
-      var d = [];
-      d = edit_d.concat();
-      edit_d = history_d[ cur_info['hx'] ].concat();
-      set_history(d);
-      set_edit_data();
+      var hd = history_d[ cur_info['hx'] ].concat();
+      if(check_data(hd)){
+        var d = [];
+        d = edit_d.concat();
+        edit_d = hd;
+        set_history(d);
+        set_edit_data();  
+      }
     }
   }
+  exit_edit();
 }
 
 function set_dot(){
@@ -102,6 +105,14 @@ function set_dot(){
 }
 
 function set_history(d){
+  if(check_data(d)){
+    history_d.unshift(d.concat());
+    history_d.pop();
+    set_history_data();
+  }
+}
+
+function check_data(d){
   var f = false;
   for(var i=0; i<8*8; i++){
     if(d[i]!=0){
@@ -109,11 +120,7 @@ function set_history(d){
       break;
     }
   }
-  if(f){
-    history_d.unshift(d.concat());
-    history_d.pop();
-    set_history_data();
-  }
+  return f;
 }
 
 function set_history_data(){
@@ -225,7 +232,13 @@ function check_editor_area(){
 }
 
 function set_tips(key){
-  $('#tips_mes').html('Tips: ' + tips_mes[key]);
+  $('#tips_mes').html('Help: ' + tips_mes[key]);
+  tips_flag = true;
+}
+
+function exit_edit(){
+  mouse_down = false;
+  document.activeElement.blur();
 }
 
 function check_clipboard_area(){

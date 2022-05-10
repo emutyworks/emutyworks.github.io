@@ -85,18 +85,22 @@ var preview_info = {
 };
 
 var tips_mes = {
-  clipboard: 'Clipboard: [LM] Copy to Editor. [Shift + LM] Copy from Editor.',
+  editor: '[LM] Draw dots.',
+  palette: '[LM] Choose a color.',
+  history: '[LM] Copy to Editor.',
+  clipboard: '[LM] Copy to Editor. [Shift + LM] Copy from Editor.',
+  edit_alert: 'Stop confirmation dialog.',
   reset: '"LM" Left Mouse Click.',
 };
 
 function init_view(){
   $('#view').attr({
-    width: VIEW_MAX_X + 'px',
-    height: VIEW_MAX_Y + 'px',
+    width: VIEW_MAX_X + 100 + 'px',
+    height: VIEW_MAX_Y + 100 + 'px',
   });
   $('#cursor').attr({
-    width: VIEW_MAX_X + 'px',
-    height: VIEW_MAX_Y + 'px',
+    width: VIEW_MAX_X + 100 + 'px',
+    height: VIEW_MAX_Y + 100 + 'px',
   });
   
   init_editor();

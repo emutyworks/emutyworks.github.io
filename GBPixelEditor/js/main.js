@@ -42,26 +42,31 @@ window.onload = function(){
   }
   function onMouseMove(e){
     mousePos(e);
-    var tips_mes = false;
-    if(mouse_down){
-      if(check_palette_area()){
+    tips_flag = false;
+    if(check_palette_area()){
+      set_tips('palette');
+      if(mouse_down){
         pick_pallete();
       }
     }
     if(check_history_area()){
+      set_tips('history');
       pick_history(e);
     }
     if(check_editor_area()){
+      set_tips('editor');
       if(mouse_down){
         set_dot();
       }
     }
     if(check_clipboard_area()){
-      tips_mes = true;
+      set_tips('clipboard');
       edit_clipboard(e);
     }
-    if(!tips_mes){
+    if(!tips_flag){
       set_tips('reset');
+      set_clipboard_line();
+      set_history_line();
     }
   }
   cursor.addEventListener('mouseup', onMouseUp, false);
