@@ -24,17 +24,22 @@ body, input, select{
 }
 .mono{
   font-family: Courier;
-  font-size: 9pt;
 }
-#view{
+#base{
   position: absolute;
   z-index: 0;
   left: 8px;
   top: 35px;
 }
-#cursor{
+#view{
   position: absolute;
   z-index: 1;
+  left: 8px;
+  top: 35px;
+}
+#cursor{
+  position: absolute;
+  z-index: 2;
   left: 8px;
   top: 35px;
 }
@@ -42,32 +47,39 @@ body, input, select{
   font-size: 8pt;
   position: relative;
   left: 0px;
-  top: 215px;
+  top: 220px;
+}
+.tips{
+  background-color: #ffff80;
 }
 #github_link{
-  font-size: 8pt;
   position: relative;
-  z-index: 1;
+  z-index: 3;
   left: 0px;
   top: 215px;
 }
+/*
 #palette_info{
-  font-size: 8pt;
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   left: 8px;
   top: 110px;
 }
-#edit_info{
-  font-size: 8pt;
+*/
+#edit_mode{
   position: absolute;
-  z-index: 2;
-  left: 229px;
-  top: 225px;
+  z-index: 3;
+  left: 233px;
+  top: 61px;
+}
+#edit_info{
+  position: absolute;
+  z-index: 3;
+  left: 230px;
+  top: 245px;
   width: 270px;
   height: 22px;
 }
-
 #filename{
   width: 100px;
 }

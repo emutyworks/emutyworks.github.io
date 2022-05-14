@@ -8,9 +8,9 @@ https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 */
 var init_form = {
   filename: 'new_tiles',
-  download_lang: 'asm',// 'asm','c'
-  edit_size_x: 8,
-  edit_size_y: 8,
+  download_lang: 'asm', // 'asm','c'
+  edit_size: '16x16', // '8x8','8x16','16x16'
+  non_dialog: false // checked=true
 };
 var palettes = {
   0:{
@@ -20,13 +20,10 @@ var palettes = {
     2: '#207531',
     3: '#07392e',
   },
-  '1':{
+  1:{
   }
 };
 var pal_info = {
-  index: 3,
+  index: 3, // 0,1,2,3
   bank: 0,
 };
-
-/* Do not change from here */
-var tips_flag = false;
