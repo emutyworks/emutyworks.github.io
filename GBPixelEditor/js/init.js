@@ -131,13 +131,13 @@ var edit_size = {
   }
 };
 
-var tips_clipboard = ' <span class="tips">[Shift + LM]</span> Select as copy target. -> Select a clipboard to copy target.';
+var tips_clipboard = ' <span class="tips">[Shift + LM]</span> Select as copy target. > Select a clipboard to copy target.';
 var tips_mes = {
   editor: 'Editor: <span class="tips">[LM]</span> Draw dots.',
   palette: 'Palette: <span class="tips">[LM]</span> Choose a color.',
-  history: 'History:  <span class="tips">[LM]</span> Select as copy target. -> Select a clipboard to copy target.',
+  history: 'History: <span class="tips">[ESC]</span> Cancel. <span class="tips">[LM]</span> Select as copy target. > Select a clipboard to copy target.',
   clipboard1: 'Clip Board: <span class="tips">[LM]</span> Set as edit target.' + tips_clipboard,
-  clipboard24: 'Clip Board: <span class="tips">[ESC]</span> Cancel. <span class="tips">[LM]</span> Select as edit target. -> Select an editor to edit target.' + tips_clipboard,
+  clipboard24: 'Clip Board: <span class="tips">[ESC]</span> Cancel. <span class="tips">[LM]</span> Select as edit target. > Select an editor to edit target.' + tips_clipboard,
   edit_alert: 'Tips: Stop confirmation dialog.',
   reset: 'Tips: "LM" Left Mouse Click.',
 };
