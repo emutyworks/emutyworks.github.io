@@ -39,52 +39,56 @@ window.onload = function(){
     mouse_down = true;
     mousePos(e);
 
-    if(check_palette_area()){
+    if(check_palette_area() && !edit_flag){
       pick_pallete();
     }
-    if(check_history_area() && !clipboard_flag){
+    if(check_history_area() && !edit_flag){
       set_tips('history');
       pick_history(e);
     }
     if(check_editor_area()){
-      if(!clipboard_flag){
+      if(!edit_flag){
         set_edit_dot();
-      }else if(clipboard_flag=='editor'){
+      }else if(edit_flag=='editor'){
         edit_d[ cur_info['di'] ] = cur_info['csel'];
         set_edit_data();
         edit_cancel();
+      }else if(edit_flag=='tools'){
+        drawFill(e);
       }
     }
     if(check_clipboard_area()){
-      edit_clipboard(e);
+      if(edit_flag!='tools'){
+        edit_clipboard(e);
+      }
     }
   }
   function onMouseMove(e){
     mousePos(e);
     tips_flag = false;
-    if(check_palette_area()){
+    if(check_palette_area() && !edit_flag){
       set_tips('palette');
       if(mouse_down){
         pick_pallete();
       }
     }
-    if(check_history_area() && !clipboard_flag){
+    if(check_history_area() && !edit_flag){
       set_tips('history');
       pick_history(e);
     }
-    if(check_editor_area() && !clipboard_flag){
+    if(check_editor_area() && !edit_flag){
       set_tips('editor');
       if(mouse_down){
         set_edit_dot();
       }
     }
-    if(check_clipboard_area()){
-      if(clipboard_flag!='history'){
+    if(check_clipboard_area() && !edit_flag){
+      if(edit_flag!='history'){
         set_tips('clipboard');
       }
       edit_clipboard(e);
     }
-    if(!tips_flag && !clipboard_flag){
+    if(!tips_flag && !edit_flag){
       edit_cancel();
     }
   }

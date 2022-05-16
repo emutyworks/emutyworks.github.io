@@ -49,12 +49,13 @@ var mouse_down = false;
 var flag = false;
 var edit_alert = false;
 var tips_flag = false;
-var clipboard_flag = false;
+var edit_flag = false;
 var editor_info = [];
 var preview_info = [];
 var edit_d = [];
 var clipboard_d = [];
 var history_d = [];
+var fill_b = [];
 
 var cur_info = {
   org_x: 0,
@@ -131,13 +132,15 @@ var edit_size = {
   }
 };
 
-var tips_clipboard = ' <span class="tips">[Shift + LM]</span> Select as copy target. > Select a clipboard to copy target.';
+var tips_clipboard = ' <span class="tips">[Shift + LM]</span> Select as copy target. > Select clipboard to copy target.';
+var tips_cancel = '<span class="tips">[ESC]</span> Cancel. ';
 var tips_mes = {
+  tools: 'Tools: '+ tips_cancel +'<span class="tips">[Bucket]</span> Click editor to fill.',
   editor: 'Editor: <span class="tips">[LM]</span> Draw dots.',
   palette: 'Palette: <span class="tips">[LM]</span> Choose a color.',
-  history: 'History: <span class="tips">[ESC]</span> Cancel. <span class="tips">[LM]</span> Select as copy target. > Select a clipboard to copy target.',
+  history: 'History: ' + tips_cancel + '<span class="tips">[LM]</span> Select as copy target. > Select clipboard to copy target.',
   clipboard1: 'Clip Board: <span class="tips">[LM]</span> Set as edit target.' + tips_clipboard,
-  clipboard24: 'Clip Board: <span class="tips">[ESC]</span> Cancel. <span class="tips">[LM]</span> Select as edit target. > Select an editor to edit target.' + tips_clipboard,
+  clipboard24: 'Clip Board: ' + tips_cancel + '<span class="tips">[LM]</span> Select as edit target. > Select editor to edit target.' + tips_clipboard,
   edit_alert: 'Tips: Stop confirmation dialog.',
   reset: 'Tips: "LM" Left Mouse Click.',
 };

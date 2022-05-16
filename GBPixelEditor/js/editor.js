@@ -6,11 +6,77 @@ Copyright (c) 2022 emutyworks
 Released under the MIT license
 https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 */
+function drawFill(){
+  var ix = cur_info['ix'];
+  var iy = cur_info['iy'];
+  var ci = edit_d[ cur_info['di'] ];
+
+  if(!edit_flag){
+    set_tips('tools');
+    edit_flag = 'tools';
+    $('#bucket').attr('src','img/bucket_on.png');
+  }else{
+    if(mouse_down){
+      if(edit_alert){
+        flag = true;
+      }else{
+        flag = edit_confirm_alert('Do you want to fill it?');
+      }
+      if(flag){
+        var pi = pal_info['index'];
+        var fi = clipboard_d[ci][ix + iy * 8];
+
+        if(pi!=fi){
+          set_history(ci);
+          
+          clipboard_d[ci][ix + iy * 8] = pi;
+          pushFillBuffer(ix,iy, 1, 0);
+          pushFillBuffer(ix,iy,-1, 0);
+          pushFillBuffer(ix,iy, 0, 1);
+          pushFillBuffer(ix,iy, 0,-1);
+          
+          searchFillBuffer(ci,pi,fi);
+        }
+        set_clipboard_box(ci);
+        set_edit_data();
+      }
+      edit_cancel();
+      $('#bucket').attr('src','img/bucket_off.png');
+    }
+  }
+}
+
+function searchFillBuffer(ci,pi,fi){
+  while(fill_b.length){
+    var fb = fill_b.pop();
+    var xy = fb.split(',');
+    var ix = parseInt(xy[0]);
+    var iy = parseInt(xy[1]);
+    var i = clipboard_d[ci][ix + iy * 8];
+
+    if(i==fi){
+      clipboard_d[ci][ix + iy * 8] = pi;
+      pushFillBuffer(ix,iy, 1, 0);
+      pushFillBuffer(ix,iy,-1, 0);
+      pushFillBuffer(ix,iy, 0, 1);
+      pushFillBuffer(ix,iy, 0,-1);
+    }
+  }
+}
+
+function pushFillBuffer(ix,iy,ax,ay){
+  var bx = ix + ax;
+  var by = iy + ay;
+  if(bx>=0 && bx<8 && by>=0 && by<8){
+    fill_b.push(bx+','+by);
+  }
+}
+
 function edit_cancel(){
   set_tips('reset');
   reset_history_cursor();
   reset_clipboard_cursor();
-  clipboard_flag = false;
+  edit_flag = false;
   cur_info['csel'] = null;
   cur_info['hsel'] = null;
 }
@@ -53,17 +119,17 @@ function edit_clipboard(e){
   var clipboard_y = cur_info['cy'] * CLIPBOARD_SIZE;
   var ci = cur_info['ci'];
 
-  if(!clipboard_flag || clipboard_flag=='clipboard' || clipboard_flag=='history'){
+  if(!edit_flag || edit_flag=='clipboard' || edit_flag=='history'){
     reset_clipboard_cursor();
     cdrowBox(CLIPBOARD_START_X + clipboard_x, CLIPBOARD_START_Y + clipboard_y, CLIPBOARD_SIZE, CLIPBOARD_SIZE, EDITOR_BOX);
 
-    if(clipboard_flag=='clipboard'){
+    if(edit_flag=='clipboard'){
       select_clipboard(cur_info['cselx'], cur_info['csely']);
     }
   }
   
   if(mouse_down){
-    if(clipboard_flag=='history'){
+    if(edit_flag=='history'){
       if(edit_alert){
         flag = true;
       }else{
@@ -77,12 +143,12 @@ function edit_clipboard(e){
     }else{
       if(e.shiftKey){
         select_clipboard(clipboard_x, clipboard_y);
-        clipboard_flag = 'clipboard';
+        edit_flag = 'clipboard';
         cur_info['csel'] = ci;
         cur_info['cselx'] = clipboard_x;
         cur_info['csely'] = clipboard_y;
       }else{
-        if(clipboard_flag=='clipboard'){
+        if(edit_flag=='clipboard'){
           if(edit_alert){
             flag = true;
           }else{
@@ -98,11 +164,11 @@ function edit_clipboard(e){
           if(editor_info['i']==1){//8x8
             edit_d[0] = cur_info['ci'];
           }else{
-            if(!clipboard_flag){
+            if(!edit_flag){
               select_clipboard(clipboard_x, clipboard_y);
     
               if(!edit_d.includes(ci)){
-                clipboard_flag = 'editor';
+                edit_flag = 'editor';
                 cur_info['csel'] = ci;
               }
             }
@@ -140,7 +206,7 @@ function select_history(history_x){
 function pick_history(){
   var hx = cur_info['hx'];
   var history_x = hx * HISTORY_SIZE;
-  if(!clipboard_flag){
+  if(!edit_flag){
     reset_history_cursor();
     cdrowBox(HISTORY_START_X + history_x, HISTORY_START_Y, HISTORY_SIZE, HISTORY_SIZE, EDITOR_BOX);
   }
@@ -155,7 +221,7 @@ function pick_history(){
     }
     if(flag){
       select_history(history_x);
-      clipboard_flag = 'history';
+      edit_flag = 'history';
       cur_info['hsel'] = hx;
       cur_info['hselx'] = history_x;
     }
