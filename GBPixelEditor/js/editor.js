@@ -77,6 +77,7 @@ function edit_cancel(){
   reset_history_cursor();
   reset_clipboard_cursor();
   edit_flag = false;
+  mouse_down = false;
   cur_info['csel'] = null;
   cur_info['hsel'] = null;
 }
