@@ -41,7 +41,6 @@ function drawFill(){
         set_edit_data();
       }
       edit_cancel();
-      $('#bucket').attr('src','img/bucket_off.png');
     }
   }
 }
@@ -80,6 +79,7 @@ function edit_cancel(){
   mouse_down = false;
   cur_info['csel'] = null;
   cur_info['hsel'] = null;
+  $('#bucket').attr('src','img/bucket_off.png');
 }
 
 function reset_clipboard_cursor(){
