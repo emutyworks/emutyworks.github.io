@@ -135,7 +135,7 @@ var edit_size = {
 var tips_clipboard = ' <span class="tips">[Shift + LM]</span> Select as copy target. > Select clipboard to copy target.';
 var tips_cancel = '<span class="tips">[ESC]</span> Cancel. ';
 var tips_mes = {
-  tools: 'Tools: '+ tips_cancel +'<span class="tips">[Bucket]</span> Click editor to fill.',
+  tools: 'Bucket: Click editor to fill. ' + tips_cancel,
   editor: 'Editor: <span class="tips">[LM]</span> Draw dots.',
   palette: 'Palette: <span class="tips">[LM]</span> Choose a color.',
   history: 'History: ' + tips_cancel + '<span class="tips">[LM]</span> Select as copy target. > Select clipboard to copy target.',
