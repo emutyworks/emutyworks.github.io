@@ -48,17 +48,17 @@ window.onload = function(){
     }
     if(check_editor_area()){
       if(!edit_flag){
-        set_edit_dot();
+        select_editor(e);
       }else if(edit_flag=='editor'){
         edit_d[ cur_info['di'] ] = cur_info['csel'];
         set_edit_data();
         edit_cancel();
-      }else if(edit_flag=='tools'){
+      }else if(edit_flag=='bucket'){
         drawFill(e);
       }
     }
     if(check_clipboard_area()){
-      if(edit_flag!='tools'){
+      if(edit_flag!='bucket'){
         edit_clipboard(e);
       }
     }
@@ -79,7 +79,7 @@ window.onload = function(){
     if(check_editor_area() && !edit_flag){
       set_tips('editor');
       if(mouse_down){
-        set_edit_dot();
+        select_editor(e);
       }
     }
     if(check_clipboard_area() && !edit_flag){
@@ -112,23 +112,33 @@ window.onload = function(){
     var ci = cx + cy * CLIPBOARD_MAX_CX;
     var hx = parseInt((x - HISTORY_START_X) / HISTORY_SIZE);
     var di = 0;
+    var ex = 0;
+    var ey = 0;
 
     if(editor_info['i']==2){
       if(dy>7){
         iy = dy - 8;
         di = 1;
+        ex = 0;
+        ey = EDITOR_BLOCK_SIZE;
       }
     }else if(editor_info['i']==4){
       if(dx<8 && dy>7){
         iy = dy - 8;
         di = 1;
+        ex = 0;
+        ey = EDITOR_BLOCK_SIZE;
       }else if(dx>7 && dy<8){
         ix = dx - 8;
         di = 2;
+        ex = EDITOR_BLOCK_SIZE;
+        ey = 0;
       }else if(dx>7 && dy>7){
         ix = dx - 8;
         iy = dy - 8;
         di = 3;
+        ex = EDITOR_BLOCK_SIZE;
+        ey = EDITOR_BLOCK_SIZE;
       }
     }
 
@@ -143,6 +153,8 @@ window.onload = function(){
       ix: ix,
       iy: iy,
       di: di,
+      ex: ex,
+      ey: ey,
       //clipboard
       cx: cx,
       cy: cy,

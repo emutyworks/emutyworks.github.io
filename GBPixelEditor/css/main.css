@@ -49,6 +49,14 @@ body, input, select{
   left: 0px;
   top: 220px;
 }
+#tips_first{
+  background-color: #ffff80;
+  font-size: 8pt;
+  position: absolute;
+  z-index: 3;
+  left: 232px;
+  top: 46px;
+}
 .tips{
   background-color: #ffff80;
 }
@@ -58,13 +66,48 @@ body, input, select{
   left: 0px;
   top: 215px;
 }
-#tools{
+#edit_mode{
+  position: absolute;
+  z-index: 3;
+  left: 321px;
+  top: 60px;
+}
+#bucket{
   font-size: 8pt;
   position: absolute;
   z-index: 3;
-  left: 56px;
-  top: 90px;
+  left: 233px;
+  top: 61px;
 }
+#f_horizontal{
+  font-size: 8pt;
+  position: absolute;
+  z-index: 3;
+  left: 250px;
+  top: 61px;
+}
+#f_vertical{
+  font-size: 8pt;
+  position: absolute;
+  z-index: 3;
+  left: 267px;
+  top: 61px;
+}
+#clockwise{
+  font-size: 8pt;
+  position: absolute;
+  z-index: 3;
+  left: 284px;
+  top: 61px;
+}
+#c_clockwise{
+  font-size: 8pt;
+  position: absolute;
+  z-index: 3;
+  left: 301px;
+  top: 61px;
+}
+
 /*
 #palette_info{
   position: absolute;
@@ -73,12 +116,6 @@ body, input, select{
   top: 110px;
 }
 */
-#edit_mode{
-  position: absolute;
-  z-index: 3;
-  left: 233px;
-  top: 61px;
-}
 #edit_info{
   position: absolute;
   z-index: 3;

@@ -10,7 +10,7 @@ var init_form = {
   filename: 'new_tiles',
   download_lang: 'asm', // 'asm','c'
   edit_size: '16x16', // '8x8','8x16','16x16'
-  non_dialog: false // checked=true
+  non_dialog: true // checked=true
 };
 var palettes = {
   0:{

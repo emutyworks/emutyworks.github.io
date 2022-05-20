@@ -20,6 +20,7 @@ var EDITOR_BOX = '#ff0000';
 var EDITOR_BOX2 = '#0000ff';
 var EDITOR_START_X = 80;
 var EDITOR_START_Y = 75;
+var EDITOR_BLOCK_SIZE = 64;
 var PREVIEW_START_X = EDITOR_START_X;
 var PREVIEW_START_Y = 0;
 var PALETTE_START_X = 0;
@@ -35,6 +36,10 @@ var HISTORY_START_X = CLIPBOARD_START_X;
 var HISTORY_START_Y = 48;
 var HISTORY_MAX_X = 16;
 var HISTORY_SIZE = HISTORY_DOT * 8 + 1;
+var TOOLS_START_X = CLIPBOARD_START_X;
+var TOOLS_START_Y = CLIPBOARD_START_Y - 50;
+var TOOLS_H = 17;
+var TOOLS_W = 85;
 
 var VIEW_MAX_X = EDITOR_START_X + 128 + 16 + 2 + CLIPBOARD_MAX_X;
 var VIEW_MAX_Y = EDITOR_START_Y + 2 + CLIPBOARD_MAX_Y;
@@ -88,16 +93,16 @@ var edit_size = {
       i: 1,
     },
     '8x16':{
-      w: 64,
-      h: 128,
+      w: EDITOR_BLOCK_SIZE,
+      h: EDITOR_BLOCK_SIZE * 2,
       ds: 8,
       ix: 1,
       iy: 2,
       i: 2,
     },
     '16x16':{
-      w: 128,
-      h: 128,
+      w: EDITOR_BLOCK_SIZE * 2,
+      h: EDITOR_BLOCK_SIZE * 2,
       ds: 8,
       ix: 2,
       iy: 2,
@@ -132,17 +137,27 @@ var edit_size = {
   }
 };
 
-var tips_clipboard = ' <span class="tips">[Shift + LM]</span> Select as copy target. > Select clipboard to copy target.';
+var tips_clipboard = ' <span class="tips">[Shift + LM]</span> Select the copy target. > Select the copy destination clipboard. ';
 var tips_cancel = '<span class="tips">[ESC]</span> Cancel. ';
 var tips_mes = {
-  tools: 'Bucket: Click editor to fill. ' + tips_cancel,
-  editor: 'Editor: <span class="tips">[LM]</span> Draw dots.',
+  f_vertical1: 'Flip Vertical: Click the icon to flip vertical.',
+  f_vertical24: 'Flip Vertical: Click the icon to flip vertical. ' + tips_cancel,
+  f_horizontal1: 'Flip Horizontal: Click the icon to flip horizontal.',
+  f_horizontal24: 'Flip Horizontal: Click the icon to flip horizontal. ' + tips_cancel,
+  c_clockwise1: 'Counter Clockwise: Click the icon to rotate counter clockwise.',
+  c_clockwise24: 'Counter Clockwise: Click the icon to rotate counter clockwise. ' + tips_cancel,
+  clockwise1: 'Clockwise: Click the icon to rotate clockwise.',
+  clockwise24: 'Clockwise: Click the icon to rotate clockwise. ' + tips_cancel,
+  bucket: 'Bucket: Click the icon. > Select the editor area to paint. ' + tips_cancel,
+  editor1: 'Editor: <span class="tips">[LM]</span> Draw dots.',
+  editor24: 'Editor: <span class="tips">[LM]</span> Draw dots. <span class="tips">[Shift + LM]</span> Select the editor area to be changed.',
   palette: 'Palette: <span class="tips">[LM]</span> Choose a color.',
   history: 'History: ' + tips_cancel + '<span class="tips">[LM]</span> Select as copy target. > Select clipboard to copy target.',
   clipboard1: 'Clip Board: <span class="tips">[LM]</span> Set as edit target.' + tips_clipboard,
-  clipboard24: 'Clip Board: ' + tips_cancel + '<span class="tips">[LM]</span> Select as edit target. > Select editor to edit target.' + tips_clipboard,
+  clipboard24: 'Clip Board: <span class="tips">[LM]</span> Select as edit target. > Select editor to edit target.' + tips_clipboard + tips_cancel,
   edit_alert: 'Tips: Stop confirmation dialog.',
-  reset: 'Tips: "LM" Left Mouse Click.',
+  reset: 'Tips: "LM" Left Mouse click.',
+  first_editor: 'Please select the editor area to be changed.',
 };
 
 function init_data(){
@@ -183,7 +198,7 @@ function set_edit_size(f){
   if(edit_alert || f){
     flag = true;
   }else{
-    flag = edit_confirm_alert('The data being edited will be reset, do you want to change the editor size?');
+    flag = edit_confirm_alert('The data being edited will be reset. Do you want to resize the editor?');
   }
   if(flag){
     var e = $('[name=edit_size]').val();
@@ -194,6 +209,7 @@ function set_edit_size(f){
       ix: edit_size['editor'][e]['ix'],
       iy: edit_size['editor'][e]['iy'],
       i: edit_size['editor'][e]['i'],
+      ci: null,
     };
     preview_info = {
       w: edit_size['preview'][e]['w'],

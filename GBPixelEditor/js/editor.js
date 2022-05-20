@@ -6,21 +6,125 @@ Copyright (c) 2022 emutyworks
 Released under the MIT license
 https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 */
+function drawHorizontal(){
+  var ci = null;
+  var d = [];
+
+  if(editor_info['i']==1){//8x8
+    ci = edit_d[ cur_info['di'] ];
+    d = clipboard_d[ci].concat();
+  }else if(edit_flag=='change_block'){
+    ci = editor_info['ci'];
+    d = clipboard_d[ci].concat();
+  }else{
+    return false;
+  }
+
+  for(var y1=0; y1<8; y1++){
+    var x2 = 7;
+    var y2 = y1;
+    for(var x1=0; x1<8; x1++){
+      clipboard_d[ci][x1 + y1 * 8] = d[x2 + y2 * 8];
+      x2--;
+    }
+  }
+  set_clipboard_box(ci);
+  set_edit_data();
+}
+
+function drawVertical(){
+  var ci = null;
+  var d = [];
+
+  if(editor_info['i']==1){//8x8
+    ci = edit_d[ cur_info['di'] ];
+    d = clipboard_d[ci].concat();
+  }else if(edit_flag=='change_block'){
+    ci = editor_info['ci'];
+    d = clipboard_d[ci].concat();
+  }else{
+    return false;
+  }
+
+  var y2 = 7;
+  for(var y1=0; y1<8; y1++){
+    for(var x1=0; x1<8; x1++){
+      var x2 = x1;
+      clipboard_d[ci][x1 + y1 * 8] = d[x2 + y2 * 8];
+    }
+    y2--;
+  }
+  set_clipboard_box(ci);
+  set_edit_data();
+}
+
+function drawClockwise(){
+  var ci = null;
+  var d = [];
+
+  if(editor_info['i']==1){//8x8
+    ci = edit_d[ cur_info['di'] ];
+    d = clipboard_d[ci].concat();
+  }else if(edit_flag=='change_block'){
+    ci = editor_info['ci'];
+    d = clipboard_d[ci].concat();
+  }else{
+    return false;
+  }
+
+  for(var y1=0; y1<8; y1++){
+    var x2 = y1;
+    var y2 = 7;
+    for(var x1=0; x1<8; x1++){
+      clipboard_d[ci][x1 + y1 * 8] = d[x2 + y2 * 8];
+      y2--;
+    }
+  }
+  set_clipboard_box(ci);
+  set_edit_data();
+}
+
+function drawCounterClockwise(){
+  var ci = null;
+  var d = [];
+
+  if(editor_info['i']==1){//8x8
+    ci = edit_d[ cur_info['di'] ];
+    d = clipboard_d[ci].concat();
+  }else if(edit_flag=='change_block'){
+    ci = editor_info['ci'];
+    d = clipboard_d[ci].concat();
+  }else{
+    return false;
+  }
+
+  var x2 = 7;
+  for(var y1=0; y1<8; y1++){
+    for(var x1=0; x1<8; x1++){
+      var y2 = x1;
+      clipboard_d[ci][x1 + y1 * 8] = d[x2 + y2 * 8];
+    }
+    x2--;
+  }
+  set_clipboard_box(ci);
+  set_edit_data();
+}
+
 function drawFill(){
   var ix = cur_info['ix'];
   var iy = cur_info['iy'];
   var ci = edit_d[ cur_info['di'] ];
 
   if(!edit_flag){
-    set_tips('tools');
-    edit_flag = 'tools';
-    $('#bucket').attr('src','img/bucket_on.png');
+    set_tips('bucket');
+    edit_flag = 'bucket';
+    $('#bucket img').attr('src','img/bucket_on.png');
   }else{
     if(mouse_down){
       if(edit_alert){
         flag = true;
       }else{
-        flag = edit_confirm_alert('Do you want to fill it?');
+        flag = edit_confirm_alert('Do you want to paint?');
       }
       if(flag){
         var pi = pal_info['index'];
@@ -75,11 +179,22 @@ function edit_cancel(){
   set_tips('reset');
   reset_history_cursor();
   reset_clipboard_cursor();
+  reset_editor_cursor();
   edit_flag = false;
   mouse_down = false;
   cur_info['csel'] = null;
   cur_info['hsel'] = null;
-  $('#bucket').attr('src','img/bucket_off.png');
+  $('#bucket img').attr('src','img/bucket_off.png');
+
+  bctx.fillStyle = EDITOR_LINE2;
+  for(var i=1; i<5; i++){
+    bctx.fillRect(TOOLS_START_X + TOOLS_H * i, TOOLS_START_Y, 1, TOOLS_H + 1);
+  }
+  bctx.fillStyle = EDITOR_BOX;
+  bctx.fillRect(TOOLS_START_X, TOOLS_START_Y, TOOLS_W, 1);
+  bctx.fillRect(TOOLS_START_X, TOOLS_START_Y + TOOLS_H, TOOLS_W, 1);
+  bctx.fillRect(TOOLS_START_X, TOOLS_START_Y, 1, TOOLS_H);
+  bctx.fillRect(TOOLS_START_X + TOOLS_W, TOOLS_START_Y, 1, TOOLS_H + 1);
 }
 
 function reset_clipboard_cursor(){
@@ -102,7 +217,7 @@ function set_clipboard_cursor(){
 
     cdrowBox(CLIPBOARD_START_X + clipboard_x, CLIPBOARD_START_Y + clipboard_y, CLIPBOARD_SIZE, CLIPBOARD_SIZE, EDITOR_BOX2);
     cctx.globalAlpha = 0.1;
-    cctx.fillStyle = '#0000ff';
+    cctx.fillStyle = EDITOR_BOX2;
     cctx.fillRect(CLIPBOARD_START_X + clipboard_x, CLIPBOARD_START_Y + clipboard_y, CLIPBOARD_SIZE, CLIPBOARD_SIZE);
     cctx.globalAlpha = 1.0;
   }
@@ -110,7 +225,7 @@ function set_clipboard_cursor(){
 
 function select_clipboard(clipboard_x, clipboard_y){
   cctx.globalAlpha = 0.3;
-  cctx.fillStyle = '#ff0000';
+  cctx.fillStyle = EDITOR_BOX;
   cctx.fillRect(CLIPBOARD_START_X + clipboard_x, CLIPBOARD_START_Y + clipboard_y, CLIPBOARD_SIZE, CLIPBOARD_SIZE);
   cctx.globalAlpha = 1.0;
 }
@@ -134,7 +249,7 @@ function edit_clipboard(e){
       if(edit_alert){
         flag = true;
       }else{
-        flag = edit_confirm_alert('Do you want to copy the selected copy target?');
+        flag = edit_confirm_alert('Do you want to copy the selected target?');
       }
       if(flag){
         clipboard_d[ ci ] = history_d[ cur_info['hsel'] ].concat();
@@ -153,7 +268,7 @@ function edit_clipboard(e){
           if(edit_alert){
             flag = true;
           }else{
-            flag = edit_confirm_alert('Do you want to copy the selected copy target?');
+            flag = edit_confirm_alert('Do you want to copy the selected target?');
           }
           if(flag){
             set_history(ci);
@@ -199,7 +314,7 @@ function set_history(ci){
 
 function select_history(history_x){
   cctx.globalAlpha = 0.3;
-  cctx.fillStyle = '#ff0000';
+  cctx.fillStyle = EDITOR_BOX;
   cctx.fillRect(HISTORY_START_X + history_x, HISTORY_START_Y, HISTORY_SIZE, HISTORY_SIZE);
   cctx.globalAlpha = 1.0;
 }
@@ -226,6 +341,24 @@ function pick_history(){
       cur_info['hsel'] = hx;
       cur_info['hselx'] = history_x;
     }
+  }
+}
+
+function select_editor(e){
+  if(e.shiftKey && !edit_flag){
+    var editor_x = cur_info['ex'];
+    var editor_y = cur_info['ey'];
+    editor_info['ci'] = edit_d[ cur_info['di'] ];
+
+    edit_flag = 'change_block';
+
+    cctx.globalAlpha = 0.2;
+    cctx.fillStyle = EDITOR_BOX2;
+    cctx.fillRect(EDITOR_START_X + editor_x, EDITOR_START_Y + editor_y, EDITOR_BLOCK_SIZE, EDITOR_BLOCK_SIZE);
+    cctx.globalAlpha = 1.0;
+
+  }else{
+    set_edit_dot();
   }
 }
 
@@ -353,6 +486,16 @@ function pick_pallete(){
   //$('#palette_info').html('Bank:' + pal_info['bank']);
 }
 
+
+function reset_editor_cursor(){
+  var fill_x = EDITOR_START_X;
+  var fill_y = EDITOR_START_Y;
+  var fill_w = editor_info['w'];
+  var fill_h = editor_info['h'];
+
+  cctx.clearRect(fill_x, fill_y, fill_w + 1, fill_h + 1);
+}
+
 function reset_palette_cursor(){
   var fill_x = PALETTE_START_X;
   var fill_y = PALETTE_START_Y;
@@ -411,12 +554,20 @@ function check_editor_area(){
   return false;
 }
 
+function set_tips_first(key){
+  if(key=='' || edit_flag=='change_block'){
+    $('#tips_first').html('');
+  }else if(editor_info['i']!=1){//not 8x8
+    $('#tips_first').html(tips_mes[key]);
+  }
+}
+
 function set_tips(key){
-  if(key=='clipboard'){
+  if(key=='editor' || key=='clipboard' || key=='f_vertical' || key=='f_horizontal' || key=='c_clockwise' || key=='clockwise'){
     if(editor_info['i']==1){//8x8
-      $('#tips_mes').html(tips_mes['clipboard1']);
+      $('#tips_mes').html(tips_mes[ key + '1' ]);
     }else{
-      $('#tips_mes').html(tips_mes['clipboard24']);
+      $('#tips_mes').html(tips_mes[ key + '24' ]);
     }  
   }else{
     $('#tips_mes').html(tips_mes[key]);
