@@ -107,15 +107,6 @@ body, input, select{
   left: 301px;
   top: 61px;
 }
-
-/*
-#palette_info{
-  position: absolute;
-  z-index: 3;
-  left: 8px;
-  top: 110px;
-}
-*/
 #edit_info{
   position: absolute;
   z-index: 3;

@@ -34,7 +34,6 @@ Upload <input type="file" id="data_upload" accept="*/*"><br>
 <option value="16x16">16x16</option>
 </select>
 </span><br>
-
 <span id="edit_info" onmouseover="set_tips('edit_alert')"><input class="checkbox" type="checkbox" name="edit_alert" id="edit_alert" onclick="set_edit_alert()" value="">Non dialog</span><br>
 
 <canvas id="base" width="" height=""></canvas>
@@ -42,12 +41,11 @@ Upload <input type="file" id="data_upload" accept="*/*"><br>
 <canvas id="cursor" width="" height=""></canvas>
 
 <span id="tips_first"></span>
-<span id="c_clockwise" onmouseover="set_tips('c_clockwise'); set_tips_first('first_editor');" onmouseout="set_tips_first('');"><a href="javascript:drawCounterClockwise()"><img src="img/counter_clockwise_off.png" width="16" height="16"></a></span>
-<span id="clockwise" onmouseover="set_tips('clockwise'); set_tips_first('first_editor');" onmouseout="set_tips_first('');"><a href="javascript:drawClockwise()"><img src="img/clockwise_off.png" width="16" height="16"></a></span>
-<span id="f_vertical" onmouseover="set_tips('f_vertical'); set_tips_first('first_editor');" onmouseout="set_tips_first('');"><a href="javascript:drawVertical()"><img src="img/flip_vertical_off.png" width="16" height="16"></a></span>
-<span id="f_horizontal" onmouseover="set_tips('f_horizontal'); set_tips_first('first_editor');" onmouseout="set_tips_first('');"><a href="javascript:drawHorizontal()"><img src="img/flip_horizontal_off.png" width="16" height="16"></a></span>
+<span id="c_clockwise" onmouseover="set_tips('c_clockwise'); set_tips_first('first_editor');"><a href="javascript:drawCounterClockwise()"><img src="img/counter_clockwise.png" width="16" height="16"></a></span>
+<span id="clockwise" onmouseover="set_tips('clockwise'); set_tips_first('first_editor');"><a href="javascript:drawClockwise()"><img src="img/clockwise.png" width="16" height="16"></a></span>
+<span id="f_vertical" onmouseover="set_tips('f_vertical'); set_tips_first('first_editor');"><a href="javascript:drawVertical()"><img src="img/flip_vertical.png" width="16" height="16"></a></span>
+<span id="f_horizontal" onmouseover="set_tips('f_horizontal'); set_tips_first('first_editor');"><a href="javascript:drawHorizontal()"><img src="img/flip_horizontal.png" width="16" height="16"></a></span>
 <span id="bucket" onmouseover="set_tips('bucket')"><a href="javascript:drawFill()"><img src="img/bucket_off.png" width="16" height="16"></a></span>
-<!-- <span id="palette_info"></span> -->
 <span id="tips_mes"></span>
 <span id="github_link">
 <hr>

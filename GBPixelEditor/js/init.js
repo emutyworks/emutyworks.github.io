@@ -61,6 +61,7 @@ var edit_d = [];
 var clipboard_d = [];
 var history_d = [];
 var fill_b = [];
+var p_table = [];
 
 var cur_info = {
   org_x: 0,
@@ -80,13 +81,16 @@ var cur_info = {
   hx: 0,
   hsel: null,
   hselx: 0,
+  //palette
+  px: 0,
+  py: 0,
 };
 
 var edit_size = {
   editor:{
     '8x8':{
-      w: 128,
-      h: 128,
+      w: EDITOR_BLOCK_SIZE * 2,
+      h: EDITOR_BLOCK_SIZE * 2,
       ds: 16,
       ix: 1,
       iy: 1,
@@ -160,6 +164,42 @@ var tips_mes = {
   first_editor: 'Please select the editor area to be changed.',
 };
 
+function init_palettes(){
+  var fill_x = PALETTE_START_X;
+  var fill_y = PALETTE_START_Y;
+  var fill_w = PALETTE_DOT;
+  var fill_h = PALETTE_DOT;
+  var palette = pal_info['palette'];
+  var cnt = pal_info['cnt'];
+
+  for(var i=0; i<cnt; i++){
+    var b = palettes[i];
+    var p = [];
+    var c = 3;
+    
+    for(var j=0; j<4; j++){
+      p[c] = bin2dec(b.substring(j*2, j*2+2));
+      c--;
+    }
+    p_table[i] = p.concat();
+  }
+
+  for(var i=0; i<cnt; i++){
+    vdrowBox(fill_x, fill_y + fill_h * i, fill_w * 4, fill_h, EDITOR_LINE);
+    for(var j=0; j<4; j++){
+      bctx.fillStyle = get_color(i,j);
+      bctx.fillRect(fill_x + fill_w * j, fill_y + fill_h * i, fill_w, fill_h);
+    }
+  }
+  var index_x = pal_info['index'] * PALETTE_DOT;
+  cdrowBox(PALETTE_START_X + index_x, PALETTE_START_Y + fill_h * palette, PALETTE_DOT, PALETTE_DOT, EDITOR_BOX);
+}
+
+function get_color(palette,index){
+  var p = p_table[palette][index];
+  return color_palettes[0][p];
+}
+
 function init_data(){
   var d = [];
   for(var i=0; i<DATA_SIZE; i++){
@@ -186,7 +226,8 @@ function init_view(){
     width: VIEW_MAX_X + 100 + 'px',
     height: VIEW_MAX_Y + 50 + 'px',
   });
-  
+
+  init_palettes();
   init_data();
   set_edit_size(true);
   init_clipboard();
@@ -225,10 +266,10 @@ function set_edit_size(f){
       edit_d[i] = i;
     }
 
+    init_palettes();
     init_editor();
     init_preview();
     set_edit_data();
-    set_palette();
     set_clipboard_cursor();
     edit_cancel();
     set_history_data();
@@ -250,7 +291,7 @@ function init_history(){
   var fill_w = HISTORY_SIZE * HISTORY_MAX_X;
   var fill_h = HISTORY_SIZE;
 
-  bctx.fillStyle = palettes[ pal_info['bank'] ][0];
+  bctx.fillStyle = get_color(pal_info['palette'],0);
   bctx.fillRect(fill_x, fill_y, fill_w, fill_h);
 
   bctx.fillStyle = EDITOR_LINE2;
@@ -267,7 +308,7 @@ function init_clipboard(){
   var fill_w = CLIPBOARD_MAX_X;
   var fill_h = CLIPBOARD_MAX_Y;
 
-  bctx.fillStyle = palettes[ pal_info['bank'] ][0];
+  bctx.fillStyle = get_color(pal_info['palette'],0);
   bctx.fillRect(fill_x, fill_y, fill_w, fill_h);
 
   bctx.fillStyle = EDITOR_LINE2;
@@ -291,10 +332,10 @@ function init_editor(){
   var ex = editor_info['ix'];
   var ey = editor_info['iy'];
 
-  bctx.clearRect(fill_x, fill_y, 128 + 1, 128 + 1);
-  vctx.clearRect(fill_x, fill_y, 128 + 1, 128 + 1);
+  bctx.clearRect(fill_x, fill_y, EDITOR_BLOCK_SIZE * 2 + 1, EDITOR_BLOCK_SIZE * 2 + 1);
+  vctx.clearRect(fill_x, fill_y, EDITOR_BLOCK_SIZE * 2 + 1, EDITOR_BLOCK_SIZE * 2 + 1);
 
-  bctx.fillStyle = palettes[ pal_info['bank'] ][0];
+  bctx.fillStyle = get_color(pal_info['palette'],0);
   bctx.fillRect(fill_x, fill_y, fill_w, fill_h);
 
   bctx.fillStyle = EDITOR_LINE;
@@ -304,7 +345,6 @@ function init_editor(){
   for(var i=0; i<8 * ey; i++){
     bctx.fillRect(fill_x, fill_y + ed * i, fill_w, 1);
   }
-  bdrowBox(fill_x, fill_y, fill_w, fill_h, EDITOR_BOX);
   bctx.fillStyle = EDITOR_LINE2;
   if(ex==2){
     bctx.fillRect(fill_x + fill_w / 2, fill_y, 1, fill_h);
@@ -312,6 +352,7 @@ function init_editor(){
   if(ey==2){
     bctx.fillRect(fill_x, fill_y + fill_h / 2, fill_w, 1);
   }
+  bdrowBox(fill_x, fill_y, fill_w, fill_h, EDITOR_BOX);
 }
 
 function init_preview(){
@@ -323,7 +364,7 @@ function init_preview(){
   bctx.clearRect(fill_x, fill_y, 64 + 2, 64 + 2);
   vctx.clearRect(fill_x, fill_y, 64 + 2, 64 + 2);
 
-  bctx.fillStyle = palettes[ pal_info['bank'] ][0];
+  bctx.fillStyle = get_color(pal_info['palette'],0);
   bctx.fillRect(fill_x, fill_y, fill_w, fill_h);
 
   bdrowBox(fill_x, fill_y, fill_w, fill_h, EDITOR_BOX);
@@ -335,6 +376,13 @@ function bdrowBox(x,y,w,h,c){
   bctx.fillRect(x, y, w, 1);
   bctx.fillRect(x + w, y, 1, h);
   bctx.fillRect(x, y + h, w + 1, 1);
+}
+function vdrowBox(x,y,w,h,c){
+  vctx.fillStyle = c;
+  vctx.fillRect(x, y, 1, h);
+  vctx.fillRect(x, y, w, 1);
+  vctx.fillRect(x + w, y, 1, h);
+  vctx.fillRect(x, y + h, w + 1, 1);
 }
 function cdrowBox(x,y,w,h,c){
   cctx.fillStyle = c;
@@ -357,4 +405,8 @@ function hex2bin(v){
   v = parseInt(v, 16);
   var len = v.toString(2).length;
   return ('00000000' + v.toString(2)).substring(len, len + 8);
+}
+
+function bin2dec(v){
+  return parseInt(v, 2);
 }

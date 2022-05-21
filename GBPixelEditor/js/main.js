@@ -48,7 +48,7 @@ window.onload = function(){
     }
     if(check_editor_area()){
       if(!edit_flag){
-        select_editor(e);
+        select_editor_block(e);
       }else if(edit_flag=='editor'){
         edit_d[ cur_info['di'] ] = cur_info['csel'];
         set_edit_data();
@@ -79,7 +79,7 @@ window.onload = function(){
     if(check_editor_area() && !edit_flag){
       set_tips('editor');
       if(mouse_down){
-        select_editor(e);
+        select_editor_block(e);
       }
     }
     if(check_clipboard_area() && !edit_flag){
@@ -90,6 +90,7 @@ window.onload = function(){
     }
     if(!tips_flag && !edit_flag){
       edit_cancel();
+      set_tips_first('');
     }
   }
   cursor.addEventListener('mouseup', onMouseUp, false);
@@ -114,6 +115,8 @@ window.onload = function(){
     var di = 0;
     var ex = 0;
     var ey = 0;
+    var px = parseInt((x - PALETTE_START_X) / PALETTE_DOT);
+    var py = parseInt((y - PALETTE_START_Y) / PALETTE_DOT);
 
     if(editor_info['i']==2){
       if(dy>7){
@@ -166,6 +169,9 @@ window.onload = function(){
       hx: hx,
       hsel: cur_info['hsel'],
       hselx: cur_info['hselx'],
+      //palette
+      px: px,
+      py: py,
     };
   }
 

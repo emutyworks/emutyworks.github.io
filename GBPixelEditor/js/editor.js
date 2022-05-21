@@ -7,107 +7,79 @@ Released under the MIT license
 https://github.com/emutyworks/GBPixelEditor/blob/main/LICENSE
 */
 function drawHorizontal(){
-  var ci = null;
-  var d = [];
+  var ci = get_editor_block();
 
-  if(editor_info['i']==1){//8x8
-    ci = edit_d[ cur_info['di'] ];
-    d = clipboard_d[ci].concat();
-  }else if(edit_flag=='change_block'){
-    ci = editor_info['ci'];
-    d = clipboard_d[ci].concat();
-  }else{
-    return false;
-  }
+  if(ci!=null){
+    var d = clipboard_d[ci].concat();
 
-  for(var y1=0; y1<8; y1++){
-    var x2 = 7;
-    var y2 = y1;
-    for(var x1=0; x1<8; x1++){
-      clipboard_d[ci][x1 + y1 * 8] = d[x2 + y2 * 8];
-      x2--;
+    for(var y1=0; y1<8; y1++){
+      var x2 = 7;
+      var y2 = y1;
+      for(var x1=0; x1<8; x1++){
+        clipboard_d[ci][x1 + y1 * 8] = d[x2 + y2 * 8];
+        x2--;
+      }
     }
+    set_clipboard_box(ci);
+    set_edit_data();
   }
-  set_clipboard_box(ci);
-  set_edit_data();
 }
 
 function drawVertical(){
-  var ci = null;
-  var d = [];
+  var ci = get_editor_block();
 
-  if(editor_info['i']==1){//8x8
-    ci = edit_d[ cur_info['di'] ];
-    d = clipboard_d[ci].concat();
-  }else if(edit_flag=='change_block'){
-    ci = editor_info['ci'];
-    d = clipboard_d[ci].concat();
-  }else{
-    return false;
-  }
+  if(ci!=null){
+    var d = clipboard_d[ci].concat();
 
-  var y2 = 7;
-  for(var y1=0; y1<8; y1++){
-    for(var x1=0; x1<8; x1++){
-      var x2 = x1;
-      clipboard_d[ci][x1 + y1 * 8] = d[x2 + y2 * 8];
+    var y2 = 7;
+    for(var y1=0; y1<8; y1++){
+      for(var x1=0; x1<8; x1++){
+        var x2 = x1;
+        clipboard_d[ci][x1 + y1 * 8] = d[x2 + y2 * 8];
+      }
+      y2--;
     }
-    y2--;
+    set_clipboard_box(ci);
+    set_edit_data();
   }
-  set_clipboard_box(ci);
-  set_edit_data();
 }
 
 function drawClockwise(){
-  var ci = null;
-  var d = [];
+  var ci = get_editor_block();
 
-  if(editor_info['i']==1){//8x8
-    ci = edit_d[ cur_info['di'] ];
-    d = clipboard_d[ci].concat();
-  }else if(edit_flag=='change_block'){
-    ci = editor_info['ci'];
-    d = clipboard_d[ci].concat();
-  }else{
-    return false;
-  }
+  if(ci!=null){
+    var d = clipboard_d[ci].concat();
 
-  for(var y1=0; y1<8; y1++){
-    var x2 = y1;
-    var y2 = 7;
-    for(var x1=0; x1<8; x1++){
-      clipboard_d[ci][x1 + y1 * 8] = d[x2 + y2 * 8];
-      y2--;
+    for(var y1=0; y1<8; y1++){
+      var x2 = y1;
+      var y2 = 7;
+      for(var x1=0; x1<8; x1++){
+        clipboard_d[ci][x1 + y1 * 8] = d[x2 + y2 * 8];
+        y2--;
+      }
     }
+    set_clipboard_box(ci);
+    set_edit_data();
   }
-  set_clipboard_box(ci);
-  set_edit_data();
 }
 
 function drawCounterClockwise(){
-  var ci = null;
-  var d = [];
+  var ci = get_editor_block();
 
-  if(editor_info['i']==1){//8x8
-    ci = edit_d[ cur_info['di'] ];
-    d = clipboard_d[ci].concat();
-  }else if(edit_flag=='change_block'){
-    ci = editor_info['ci'];
-    d = clipboard_d[ci].concat();
-  }else{
-    return false;
-  }
+  if(ci!=null){
+    var d = clipboard_d[ci].concat();
 
-  var x2 = 7;
-  for(var y1=0; y1<8; y1++){
-    for(var x1=0; x1<8; x1++){
-      var y2 = x1;
-      clipboard_d[ci][x1 + y1 * 8] = d[x2 + y2 * 8];
+    var x2 = 7;
+    for(var y1=0; y1<8; y1++){
+      for(var x1=0; x1<8; x1++){
+        var y2 = x1;
+        clipboard_d[ci][x1 + y1 * 8] = d[x2 + y2 * 8];
+      }
+      x2--;
     }
-    x2--;
+    set_clipboard_box(ci);
+    set_edit_data();
   }
-  set_clipboard_box(ci);
-  set_edit_data();
 }
 
 function drawFill(){
@@ -185,7 +157,8 @@ function edit_cancel(){
   cur_info['csel'] = null;
   cur_info['hsel'] = null;
   $('#bucket img').attr('src','img/bucket_off.png');
-
+  document.activeElement.blur();
+  
   bctx.fillStyle = EDITOR_LINE2;
   for(var i=1; i<5; i++){
     bctx.fillRect(TOOLS_START_X + TOOLS_H * i, TOOLS_START_Y, 1, TOOLS_H + 1);
@@ -293,7 +266,8 @@ function edit_clipboard(e){
       }
     }
     set_edit_data();
-    exit_edit();
+    mouse_down = false;
+    document.activeElement.blur();
   }
 }
 
@@ -344,7 +318,17 @@ function pick_history(){
   }
 }
 
-function select_editor(e){
+function get_editor_block(){
+  var ci = null;
+  if(editor_info['i']==1){//8x8
+    ci = edit_d[ cur_info['di'] ];
+  }else if(edit_flag=='change_block'){
+    ci = editor_info['ci'];
+  }
+  return ci;
+}
+
+function select_editor_block(e){
   if(e.shiftKey && !edit_flag){
     var editor_x = cur_info['ex'];
     var editor_y = cur_info['ey'];
@@ -352,11 +336,11 @@ function select_editor(e){
 
     edit_flag = 'change_block';
 
-    cctx.globalAlpha = 0.2;
+    cdrowBox(EDITOR_START_X + editor_x, EDITOR_START_Y + editor_y, EDITOR_BLOCK_SIZE, EDITOR_BLOCK_SIZE, EDITOR_BOX2);
+    cctx.globalAlpha = 0.1;
     cctx.fillStyle = EDITOR_BOX2;
     cctx.fillRect(EDITOR_START_X + editor_x, EDITOR_START_Y + editor_y, EDITOR_BLOCK_SIZE, EDITOR_BLOCK_SIZE);
     cctx.globalAlpha = 1.0;
-
   }else{
     set_edit_dot();
   }
@@ -373,7 +357,8 @@ function set_edit_dot(){
   var ci = edit_d[ cur_info['di'] ];
 
   clipboard_d[ci][ix + iy * 8] = i;
-  vctx.fillStyle = palettes[ pal_info['bank'] ][i];
+
+  vctx.fillStyle = get_color(pal_info['palette'],i);
   vctx.fillRect(EDITOR_START_X + 1 + ed * dx, EDITOR_START_Y + 1 + ed * dy, ed - 1, ed - 1);
   vctx.fillRect(PREVIEW_START_X + 1 + pd * dx, PREVIEW_START_Y + 1 + pd * dy, pd, pd);
 
@@ -397,7 +382,7 @@ function set_history_data(){
     for(var dy=0; dy<8; dy++){
       for(var dx=0; dx<8; dx++){
         var hd = history_d[hx][dx + dy * 8];
-        vctx.fillStyle = palettes[ pal_info['bank'] ][hd];
+        vctx.fillStyle = get_color(pal_info['palette'], hd);
         vctx.fillRect(HISTORY_START_X + 1 + history_x + HISTORY_DOT * dx, HISTORY_START_Y + 1 + HISTORY_DOT * dy, HISTORY_DOT, HISTORY_DOT);
       }
     }
@@ -437,7 +422,7 @@ function set_edit_box(ci,bp){
     for(var dx=0; dx<8; dx++){
       var i = clipboard_d[ci][dx + dy * 8];
 
-      vctx.fillStyle = palettes[ pal_info['bank'] ][i];
+      vctx.fillStyle = get_color(pal_info['palette'],i);
       vctx.fillRect(EDITOR_START_X + 1 + edit_x + ed * dx, EDITOR_START_Y + 1 + edit_y + ed * dy, ed - 1, ed - 1);
       vctx.fillRect(PREVIEW_START_X + 1 + preview_x + pd * dx, PREVIEW_START_Y + 1 + preview_y + pd * dy, pd, pd);
     }
@@ -463,29 +448,30 @@ function set_clipboard_box(ci){
     for(var dx=0; dx<8; dx++){
       var i = clipboard_d[ci][dx + dy * 8];
 
-      vctx.fillStyle = palettes[ pal_info['bank'] ][i];
+      vctx.fillStyle = get_color(pal_info['palette'],i);
       vctx.fillRect(CLIPBOARD_START_X + 1 + clipboard_x + CLIPBOARD_DOT * dx, CLIPBOARD_START_Y + 1 + clipboard_y + CLIPBOARD_DOT * dy, CLIPBOARD_DOT, CLIPBOARD_DOT);
     }
   }
 }
 
 function pick_pallete(){
-  if(cur_info['x']>0 && cur_info['x']<PALETTE_DOT){
-    pal_info['index'] = 0;
-  }else if(cur_info['x']>PALETTE_DOT && cur_info['x']<PALETTE_DOT * 2){
-    pal_info['index'] = 1;
-  }else if(cur_info['x']>PALETTE_DOT * 2 && cur_info['x']<PALETTE_DOT * 3){
-    pal_info['index'] = 2;
-  }else{
-    pal_info['index'] = 3;
+  var px = cur_info['px'];
+  var py = cur_info['py'];
+  var old_palette = pal_info['palette'];
+
+  pal_info['index'] = px;
+  pal_info['palette'] = py;
+
+  if(old_palette!=py){
+    console.log('change!!');
+    set_edit_data();
+    set_clipboard_data();
+    set_history_data();
   }
 
   reset_palette_cursor();
-  var index_x = pal_info['index'] * PALETTE_DOT;
-  cdrowBox(PALETTE_START_X + index_x, PALETTE_START_Y, PALETTE_DOT - 1, PALETTE_DOT - 1, EDITOR_BOX);
-  //$('#palette_info').html('Bank:' + pal_info['bank']);
+  cdrowBox(PALETTE_START_X + PALETTE_DOT * px, PALETTE_START_Y + PALETTE_DOT * py, PALETTE_DOT, PALETTE_DOT, EDITOR_BOX);
 }
-
 
 function reset_editor_cursor(){
   var fill_x = EDITOR_START_X;
@@ -500,30 +486,16 @@ function reset_palette_cursor(){
   var fill_x = PALETTE_START_X;
   var fill_y = PALETTE_START_Y;
   var fill_w = PALETTE_DOT * 4;
-  var fill_h = PALETTE_DOT;
+  var fill_h = PALETTE_DOT * pal_info['cnt'];
 
   cctx.clearRect(fill_x, fill_y, fill_w + 1, fill_h + 1);
-}
-
-function set_palette(){
-  var index_x = pal_info['index'] * PALETTE_DOT;
-  var fill_x = PALETTE_START_X;
-  var fill_y = PALETTE_START_Y;
-  var fill_w = PALETTE_DOT;
-  var fill_h = PALETTE_DOT;
-  
-  for(var i=0; i<4; i++){
-    bctx.fillStyle = palettes[ pal_info['bank'] ][i];
-    bctx.fillRect(fill_x + fill_w * i, fill_y, fill_w, fill_h);
-  }
-  cdrowBox(PALETTE_START_X + index_x, PALETTE_START_Y, PALETTE_DOT - 1, PALETTE_DOT - 1, EDITOR_BOX);
 }
 
 function check_palette_area(){
   if(cur_info['x']>PALETTE_START_X
     && cur_info['x']<PALETTE_DOT * 4
     && cur_info['y']>PALETTE_START_Y
-    && cur_info['y']<PALETTE_START_Y + PALETTE_DOT
+    && cur_info['y']<PALETTE_START_Y + PALETTE_DOT * pal_info['cnt']
     ){
     return true;
   }
@@ -573,11 +545,6 @@ function set_tips(key){
     $('#tips_mes').html(tips_mes[key]);
   }
   tips_flag = true;
-}
-
-function exit_edit(){
-  mouse_down = false;
-  document.activeElement.blur();
 }
 
 function check_clipboard_area(){
