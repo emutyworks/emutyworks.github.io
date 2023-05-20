@@ -258,11 +258,14 @@ function getMapSize(){
   return map_max_x + 'x' + map_max_y;
 }
 
+function padNum2(v){
+  var len = v.toString().length;
+  return (('00'+v).substring(len,len+2));
+}
 function padNum3(v){
   var len = v.toString().length;
   return (('000'+v).substring(len,len+3));
 }
-
 function padNum4(v){
   var len = v.toString().length;
   return (('0000'+v).substring(len,len+4));
