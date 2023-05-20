@@ -1,0 +1,81 @@
+body, input, select, textarea, button, span, tr, td, div{
+  z-index: 5;
+  font-family: sans-serif;
+  font-size: 8pt;
+  padding: 0px 0px 0px 0px;
+  cursor: default;
+}
+
+.canvas_base{
+  position: absolute;
+  top: 94px;
+  left: 8px;
+}
+#base{
+  z-index: 0;
+}
+#view{
+  z-index: 1;
+}
+#grid{
+  z-index: 2;
+}
+#cursor{
+  z-index: 4;
+}
+
+#map_table_title{
+  position: absolute;
+  top: 73px;
+  left: 8px;
+}
+#map_table_info{
+  position: absolute;
+  top: 78px;
+  left: 260px;
+}
+
+#bg_tiles_title{
+  position: absolute;
+  top: 80px;
+  left: 536px;
+}
+#bg_palette_title{
+  position: absolute;
+  top: 80px;
+  left: 688px;
+}
+
+#help_mes{
+  position: relative;
+  top: 5px;
+  background-color: #ffff80;
+  width: 600px;
+}
+
+table, td, th{
+  border-collapse: collapse;
+  border: 1px #c0c0c0 solid;
+  padding: 0px 2px;
+}
+
+input[type="radio"], input[type="checkbox"]{
+  position: relative;
+  top: 3px;
+}
+select{
+  position: relative;
+  top: -3px; 
+}
+
+#map_table{
+  position: absolute;
+  top: 630px;
+  left: 8px;
+}
+
+#hr{
+  position: relative;
+  top: 670px;
+}
+
