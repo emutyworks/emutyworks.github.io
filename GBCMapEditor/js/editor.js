@@ -204,10 +204,13 @@ function attr2Palette(attr){
 
 function setMapTableInfo(){
   var i = cur_info['mi'];
+  var x = padNum2(cur_info['mx']);
+  var y = padNum2(cur_info['my']);
   var p = attr2Palette(attr_table[i]);
   var h = attr2HorizontalFlip(attr_table[i]);
   var v = attr2VerticalFlip(attr_table[i]);
-  var txt = '[pal: '+p+' h: '+h+' v: '+v+' idx: '+padNum4(i)+']';
+  var idx = padNum3(map_table[i]);
+  var txt = '[pal: '+p+' h: '+h+' v: '+v+' idx: '+idx+' x: '+x+' y: '+y+']';
   $('#map_table_info').text(txt);
 }
 
