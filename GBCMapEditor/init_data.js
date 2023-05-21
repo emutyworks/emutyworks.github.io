@@ -60,7 +60,7 @@ db 0,0,0,0,0,0,0,0
 
 # [MapTbl]
 # [MapSize] 32x32
-# [ShowGrid] false
+# [ShowGrid] true
 
 # [AttributesTbl]
 
