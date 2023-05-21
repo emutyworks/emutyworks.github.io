@@ -22,6 +22,7 @@ var BGTILES_START_Y = 0;
 var palette_start_x = right_start+BGTILES_SIZE*8+8+16;
 var PALETTE_START_Y = BGTILES_START_Y;
 var EDITOR_LINE = '#ff0000';
+var EDITOR_LINE2 = '#0000ff';
 var EDITOR_BOX = '#ff0000';
 var EDITOR_BOX2 = '#0000ff';
 
@@ -69,7 +70,8 @@ var cur_info = {
 
 var help_cancel = '[ESC or RM] Cancel';
 var help_mes = {
-  edit_maptable: '[0-7/h/v] Change Attributes [LM] Click to set Map Table',
+  edit_maptable: '[0-7/h/v] Change Attributes',
+  edit_maptable2: '[0-7/h/v] Change Attributes [LM] Click to set Map Table '+help_cancel,
   bg_tiles: '[0-7] Change Palette [LM] Click to select BG Tile',
   start: 'Please Upload tiles.bin',
   reset: '[LM] Left Mouse click [RM] Right Mouse click',

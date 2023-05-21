@@ -59,7 +59,7 @@ window.onload = function(){
         setBgTilesCursor();
         selectBgTiles();
       }else
-      if(checkMapTableArea() && edit_flag == 'edit_maptable'){
+      if(checkMapTableArea() && edit_flag == 'edit_maptable2'){
         setMapTable();
       }
     }
@@ -75,7 +75,9 @@ window.onload = function(){
         setBgTilesCursor();
       }else
       if(checkMapTableArea()){
-        setMes('edit_maptable');
+        if(edit_flag!='edit_maptable2'){
+          setMes('edit_maptable');
+        }
         resetMapTableCursor();
         setMapTableCursor();
       }else

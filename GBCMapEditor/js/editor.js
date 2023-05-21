@@ -8,7 +8,7 @@ function setMapTable(){
 
 function selectBgTiles(){
   if(!edit_flag){
-    edit_flag = 'edit_maptable';
+    edit_flag = 'edit_maptable2';
     setMes(edit_flag);
     cur_info['bsel'] = cur_info['bi'];
     
@@ -155,6 +155,15 @@ function showGrid(){
     for(var x=1; x<map_max_x; x++){
       gctx.fillRect(MAP_START_X+MAP_SIZE*x+1,MAP_START_Y+1,1,MAP_SIZE*map_max_x);
     }
+
+    gctx.fillStyle = EDITOR_LINE2;
+    for(var y=8; y<map_max_y; y+=8){
+      gctx.fillRect(MAP_START_X+1,MAP_START_Y+y*MAP_SIZE,MAP_SIZE*map_max_x,1);
+    }
+    for(var x=8; x<map_max_x; x+=8){
+      gctx.fillRect(MAP_START_X+MAP_SIZE*x+1,MAP_START_Y+1,1,MAP_SIZE*map_max_x);
+    }
+
     gctx.globalAlpha = 1.0;
   }else{
     show_grid = false;
