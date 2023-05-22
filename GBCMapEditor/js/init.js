@@ -62,16 +62,23 @@ var cur_info = {
   //bg tiles
   bx: 0,
   by: 0,
+  bi: 0,
   bsel: null,
   //map table
   mx: 0,
   my: 0,
+  mi: 0,
+  smx: null,
+  smy: null,
+  smi: null,
 };
 
 var help_cancel = '[ESC or RM] Cancel';
+var map_attributes = '[0-7/h/v/p] Change Attributes';
 var help_mes = {
-  edit_maptable: '[0-7/h/v] Change Attributes',
-  edit_maptable2: '[0-7/h/v] Change Attributes [LM] Click to set Map Table '+help_cancel,
+  edit_maptable: map_attributes+' [Shift + LM] Click to select Map Table',
+  edit_maptable2: map_attributes+' [LM] Click to set Map Table '+help_cancel,
+  copy_map_table: '[LM] Click to set Map Table '+help_cancel,
   bg_tiles: '[0-7] Change Palette [LM] Click to select BG Tile',
   start: 'Please Upload tiles.bin',
   reset: '[LM] Left Mouse click [RM] Right Mouse click',

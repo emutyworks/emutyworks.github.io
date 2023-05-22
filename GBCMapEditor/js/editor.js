@@ -7,18 +7,41 @@ function setMapTable(){
 }
 
 function selectBgTiles(){
+  edit_flag = 'edit_maptable2';
+  setMes(edit_flag);
+  cur_info['bsel'] = cur_info['bi'];
+  
+  var xx = bgtiles_start_x+cur_info['bx']*(BGTILES_SIZE+1);
+  var yy = BGTILES_START_Y+cur_info['by']*(BGTILES_SIZE+1);
+  cctx.globalAlpha = 0.2;
+  cctx.fillStyle = EDITOR_BOX;
+  cctx.fillRect(xx,yy,BGTILES_SIZE+1,BGTILES_SIZE+1);
+  cctx.globalAlpha = 1.0;
+}
+
+function copyMapTable(){
+  var i = cur_info['mi'];
+  var si = cur_info['smi'];
+
+  map_table[i] = map_table[si];
+  attr_table[i] = attr_table[si];
+  drawMapTiles();
+}
+
+function selectMapTable(){
   if(!edit_flag){
-    edit_flag = 'edit_maptable2';
-    setMes(edit_flag);
-    cur_info['bsel'] = cur_info['bi'];
-    
-    var xx = bgtiles_start_x+cur_info['bx']*(BGTILES_SIZE+1);
-    var yy = BGTILES_START_Y+cur_info['by']*(BGTILES_SIZE+1);
-    cctx.globalAlpha = 0.2;
-    cctx.fillStyle = EDITOR_BOX;
-    cctx.fillRect(xx,yy,BGTILES_SIZE+1,BGTILES_SIZE+1);
-    cctx.globalAlpha = 1.0;
+    edit_flag = 'copy_map_table';
+    cur_info['smx'] = cur_info['mx'];
+    cur_info['smy'] = cur_info['my'];
+    cur_info['smi'] = cur_info['mi'];
   }
+  setMes(edit_flag);
+  var xx = MAP_START_X+cur_info['smx']*MAP_SIZE;
+  var yy = MAP_START_Y+cur_info['smy']*MAP_SIZE;
+  cctx.globalAlpha = 0.2;
+  cctx.fillStyle = EDITOR_BOX;
+  cctx.fillRect(xx,yy,BGTILES_SIZE+1,BGTILES_SIZE+1);
+  cctx.globalAlpha = 1.0;
 }
 
 function drawTile(xx,yy,index,p,dot_size,v_flip,h_flip,m){
@@ -147,6 +170,8 @@ function checkBgTilesArea(){
 function showGrid(){
   if($('#show_grid').prop('checked')){
     show_grid = true;
+    gctx.clearRect(MAP_START_X+1,MAP_START_Y,MAP_SIZE*map_max_x,MAP_SIZE*map_max_y);
+
     gctx.fillStyle = EDITOR_LINE;
     gctx.globalAlpha = 0.2;
     for(var y=1; y<map_max_y; y++){
@@ -163,12 +188,30 @@ function showGrid(){
     for(var x=8; x<map_max_x; x+=8){
       gctx.fillRect(MAP_START_X+MAP_SIZE*x+1,MAP_START_Y+1,1,MAP_SIZE*map_max_x);
     }
-
     gctx.globalAlpha = 1.0;
+
+    _drawPriority();
   }else{
     show_grid = false;
     gctx.clearRect(MAP_START_X+1,MAP_START_Y,MAP_SIZE*map_max_x,MAP_SIZE*map_max_y);
   }
+}
+
+function _drawPriority(){
+  var xx = MAP_START_X+1;
+  var yy = MAP_START_Y+1;
+  
+  gctx.fillStyle = EDITOR_BOX2;
+  gctx.globalAlpha = 0.2;
+  for(var y=0; y<map_max_y; y++){
+    for(var x=0; x<map_max_x; x++){
+      var pos = y*map_max_y+x;
+      if(attr2Priority(attr_table[pos])==1){
+        gctx.fillRect(xx+x*BGTILES_SIZE,yy+y*BGTILES_SIZE,BGTILES_SIZE-1,BGTILES_SIZE-1);
+      }
+    }
+  }
+  gctx.globalAlpha = 1.0;
 }
 
 function drawMapTiles(){
@@ -201,6 +244,9 @@ function drawBgTiles(){
   }
 }
 
+function attr2Priority(attr){
+  return (attr&0b10000000)>>7;
+}
 function attr2VerticalFlip(attr){
   return (attr&0b01000000)>>6;
 }
@@ -218,8 +264,9 @@ function setMapTableInfo(){
   var p = attr2Palette(attr_table[i]);
   var h = attr2HorizontalFlip(attr_table[i]);
   var v = attr2VerticalFlip(attr_table[i]);
+  var pri = attr2Priority(attr_table[i]);
   var idx = padNum3(map_table[i]);
-  var txt = '[pal: '+p+' h: '+h+' v: '+v+' idx: '+idx+' x: '+x+' y: '+y+']';
+  var txt = '[pal: '+p+' h: '+h+' v: '+v+' p: '+pri+' idx: '+idx+' x: '+x+' y: '+y+']';
   $('#map_table_info').text(txt);
 }
 
@@ -228,6 +275,7 @@ function setMapAttributes(keycode){
   var p = attr2Palette(attr_table[i]);
   var h = attr2HorizontalFlip(attr_table[i]);
   var v = attr2VerticalFlip(attr_table[i]);
+  var pri = attr2Priority(attr_table[i]);
 
   if(keycode>=48 && keycode<=55){
     p = keycode-48;
@@ -246,6 +294,13 @@ function setMapAttributes(keycode){
       v = 0;
     }
   }
+  if(keycode===80){//p
+    if(pri==0){
+      pri = 1;
+    }else{
+      pri = 0;
+    }
+  }
 
   var attr = p;
   if(h==1){
@@ -254,11 +309,15 @@ function setMapAttributes(keycode){
   if(v==1){
     attr = attr|0b01000000;
   }
+  if(pri==1){
+    attr = attr|0b10000000;
+  }
 
   attr_table[i] = dec2bin8(attr);
 
   setMapTableInfo();
   drawMapTiles();
+  showGrid();
 }
 
 function setBGTilesInfo(){

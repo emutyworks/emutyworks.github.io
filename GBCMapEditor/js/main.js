@@ -26,9 +26,9 @@ window.onload = function(){
           setBGTilesPalette(e.keyCode);
         }
       }else
-      if(checkMapTableArea()){
+      if(checkMapTableArea() && edit_flag!='copy_map_table'){
         if((e.keyCode>=48 && e.keyCode<=55)
-        || e.keyCode===72 || e.keyCode===86
+        || e.keyCode===72 || e.keyCode===86 || e.keyCode===80 //72=h,86=v,80=p
         ){
           setMapAttributes(e.keyCode);
         }
@@ -59,8 +59,16 @@ window.onload = function(){
         setBgTilesCursor();
         selectBgTiles();
       }else
-      if(checkMapTableArea() && edit_flag == 'edit_maptable2'){
-        setMapTable();
+      if(checkMapTableArea()){
+        if(edit_flag == 'edit_maptable2'){
+          setMapTable();
+        }else
+        if(edit_flag == 'copy_map_table'){
+          copyMapTable();
+        }else
+        if(e.shiftKey && !edit_flag){
+          selectMapTable();
+        }
       }
     }
   }
@@ -80,6 +88,10 @@ window.onload = function(){
         }
         resetMapTableCursor();
         setMapTableCursor();
+        
+        if(edit_flag=='copy_map_table'){
+          selectMapTable();
+        }
       }else
       if(!help_flag && !edit_flag){
         editCancel();
@@ -136,6 +148,9 @@ window.onload = function(){
       mx: mx,
       my: my,
       mi: mi,
+      smx: cur_info['smx'],
+      smy: cur_info['smy'],
+      smi: cur_info['smi'],
     };
   }
 }
