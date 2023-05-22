@@ -26,6 +26,7 @@ function copyMapTable(){
   map_table[i] = map_table[si];
   attr_table[i] = attr_table[si];
   drawMapTiles();
+  showGrid();
 }
 
 function selectMapTable(){
