@@ -60,10 +60,10 @@ window.onload = function(){
         selectBgTiles();
       }else
       if(checkMapTableArea()){
-        if(edit_flag == 'edit_maptable2'){
+        if(edit_flag=='edit_maptable2'){
           setMapTable();
         }else
-        if(edit_flag == 'copy_map_table'){
+        if(edit_flag=='copy_map_table'){
           copyMapTable();
         }else
         if(e.shiftKey && !edit_flag){
@@ -88,9 +88,16 @@ window.onload = function(){
         }
         resetMapTableCursor();
         setMapTableCursor();
-        
+
+        if(edit_flag=='edit_maptable2' && mouse_down){
+          setMapTable();
+        }
         if(edit_flag=='copy_map_table'){
           selectMapTable();
+          if(mouse_down){
+            copyMapTable();
+            console.log('copy!');
+          }
         }
       }else
       if(!help_flag && !edit_flag){

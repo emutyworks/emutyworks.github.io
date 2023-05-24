@@ -1,9 +1,11 @@
 function setMapTable(){
+  var x = cur_info['mx'];
+  var y = cur_info['my'];
   var i = cur_info['mi'];
   var bi = cur_info['bsel'];
   map_table[i] = bi;
   attr_table[i] = dec2bin8(tile_palette[bi]);
-  drawMapTiles();
+  drawMapTile(x,y);
 }
 
 function selectBgTiles(){
@@ -20,12 +22,14 @@ function selectBgTiles(){
 }
 
 function copyMapTable(){
+  var x = cur_info['mx'];
+  var y = cur_info['my'];
   var i = cur_info['mi'];
   var si = cur_info['smi'];
 
   map_table[i] = map_table[si];
   attr_table[i] = attr_table[si];
-  drawMapTiles();
+  drawMapTile(x,y);
   showGrid();
 }
 
@@ -199,7 +203,7 @@ function showGrid(){
 }
 
 function _drawPriority(){
-  var xx = MAP_START_X+1;
+  var xx = MAP_START_X+2;
   var yy = MAP_START_Y+1;
   
   gctx.fillStyle = EDITOR_BOX2;
@@ -216,19 +220,23 @@ function _drawPriority(){
 }
 
 function drawMapTiles(){
+  for(var y=0; y<map_max_y; y++){
+    for(var x=0; x<map_max_x; x++){
+      drawMapTile(x,y);
+    }
+  }
+}
+
+function drawMapTile(x,y){
   var xx = MAP_START_X+1;
   var yy = MAP_START_Y+1;
 
-  for(var y=0; y<map_max_y; y++){
-    for(var x=0; x<map_max_x; x++){
-      var pos = y*map_max_y+x;
-      var index = map_table[pos];
-      var p = attr2Palette(attr_table[pos]);
-      var v_flip = attr2VerticalFlip(attr_table[pos]);
-      var h_flip = attr2HorizontalFlip(attr_table[pos]);
-      drawTile(xx+x*BGTILES_SIZE,yy+y*BGTILES_SIZE,index,p,BGTILES_DOT,v_flip,h_flip,"v");
-    }
-  }
+  var i = y*map_max_y+x;
+  var index = map_table[i];
+  var p = attr2Palette(attr_table[i]);
+  var v_flip = attr2VerticalFlip(attr_table[i]);
+  var h_flip = attr2HorizontalFlip(attr_table[i]);
+  drawTile(xx+x*BGTILES_SIZE,yy+y*BGTILES_SIZE,index,p,BGTILES_DOT,v_flip,h_flip,"v");
 }
 
 function drawBgTiles(){
@@ -272,6 +280,8 @@ function setMapTableInfo(){
 }
 
 function setMapAttributes(keycode){
+  var x = cur_info['mx'];
+  var y = cur_info['my'];
   var i = cur_info['mi'];
   var p = attr2Palette(attr_table[i]);
   var h = attr2HorizontalFlip(attr_table[i]);
@@ -317,7 +327,7 @@ function setMapAttributes(keycode){
   attr_table[i] = dec2bin8(attr);
 
   setMapTableInfo();
-  drawMapTiles();
+  drawMapTile(x,y);
   showGrid();
 }
 
