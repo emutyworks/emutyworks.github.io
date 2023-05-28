@@ -19,14 +19,16 @@ Upload tiles.bin (GBTD export file/All-purpose binary):<input type="file" name="
 <a href="#" id="map_download" onClick="map_download()">Download:</a> <input type="text" name="download_file" size="12"> Upload:<input type="file" name="map_upload" accept="*/*"><br>
 <div id="help_mes"></div>
 <span id="map_table_title">Map Table: edit <select name="map_size" onchange="setMapSize('confirm')">
+<option value="20x18">20x18</option>
 <option value="32x32">32x32</option>
-<!-- <option value="32x64">32x64</option>
-<option value="64x32">64x32</option>
-<option value="64x64">64x64</option> -->
-</select> tiles <input type="checkbox" name="show_grid" id="show_grid" onClick="showGrid()" value="">Show Grid</span>
+</select> x <select name="map_screens" onchange="setMapSize('confirm')">
+<option value="1">1</option>
+<option value="4">4</option>
+</select><input type="checkbox" name="show_grid" id="show_grid" onClick="showGrid()" value="">Grid</span>
 <span id="map_table_info"></span>
 <span id="bg_tiles_title">BG Tiles:</span>
 <span id="bg_palette_title">BG Palette:</span>
+<span id="map_screens_title"></span>
 <canvas id="base" class="canvas_base" width="" height=""></canvas>
 <canvas id="view" class="canvas_base" width="" height=""></canvas>
 <canvas id="grid" class="canvas_base" width="" height=""></canvas>

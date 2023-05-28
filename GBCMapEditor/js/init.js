@@ -1,10 +1,10 @@
 var PALETTE_DOT = 14;
 var BGTILES_DOT = 2;
 var MAP_DOT = 2;
-var MAPVIEW_DOT = 1;
+var MAPSCREEN_DOT = 1;
 var BGTILES_SIZE = BGTILES_DOT*8;
 var MAP_SIZE = MAP_DOT*8;
-var MAPVIEW_SIZE = MAPVIEW_DOT*8;
+var MAPSCREEN_SIZE = MAPSCREEN_DOT*8;
 var BGTILES_MAX_X = 8;
 var BGTILES_MAX_Y = 16;
 var BGTILES_MAX = 128;
@@ -15,19 +15,24 @@ var MAP_START_Y = 0;
 
 var map_max_x = 32;
 var map_max_y = 32;
-var right_start = BGTILES_SIZE*map_max_x+16;
+var map_screens = 1;
+var edit_screen = 0;
+var right_start = BGTILES_SIZE*map_max_x+8+2;
 
 var bgtiles_start_x = right_start;
 var BGTILES_START_Y = 0;
-var palette_start_x = right_start+BGTILES_SIZE*8+8+16;
-var PALETTE_START_Y = BGTILES_START_Y;
+var palette_start_x = right_start;
+var PALETTE_START_Y = (BGTILES_SIZE+1)*BGTILES_MAX_Y+16;
+var mapscreens_start_x = right_start+(BGTILES_SIZE+1)*BGTILES_MAX_X+8+2;
+var MAPSCREENS_START_Y = 0;
+
 var EDITOR_LINE = '#ff0000';
 var EDITOR_LINE2 = '#0000ff';
 var EDITOR_BOX = '#ff0000';
 var EDITOR_BOX2 = '#0000ff';
 
-var VIEW_MAX_X = 800;
-var VIEW_MAX_Y = 600;
+var VIEW_MAX_X = 1200;
+var VIEW_MAX_Y = 530;
 
 var base = null;
 var view = null;
@@ -42,9 +47,7 @@ var mouse_down = false;
 var help_flag = false;
 var edit_flag = false;
 var bin_upload = false;
-var flag = false;
 var show_grid = false;
-var select_view = 0;
 
 var bg_tiles = [];
 var bg_palette = [];
@@ -71,6 +74,10 @@ var cur_info = {
   smx: null,
   smy: null,
   smi: null,
+  //map screen
+  msx: 0,
+  msy: 0,
+  msi: 0,
 };
 
 var help_cancel = '[ESC or RM] Cancel';
@@ -87,6 +94,7 @@ var help_mes = {
 function setMapSize(m){
   if(!bin_upload){ return; }
 
+  var flag = false;
   if(m=="confirm"){
     flag = edit_confirm_alert('The data being edited will be reset. Resize Map Table?');
   }else{
@@ -99,6 +107,8 @@ function setMapSize(m){
     $('[name="map_size"]').val(getMapSize()).prop('selected',true);
   }
 
+  map_screens = $('[name="map_screens"]:selected').val();
+
   var x = 0;
   var y = 0;
   var w = VIEW_MAX_X;
@@ -107,14 +117,27 @@ function setMapSize(m){
   vctx.clearRect(x,y,w,h);
   gctx.clearRect(x,y,w,h);
 
-  right_start = BGTILES_SIZE*map_max_x+16;
+  right_start = BGTILES_SIZE*map_max_x+8+2;
   bgtiles_start_x = right_start;
-  palette_start_x = right_start+BGTILES_SIZE*8+8+16;
+  palette_start_x = right_start;
+  mapscreens_start_x = right_start+(BGTILES_SIZE+1)*BGTILES_MAX_X+8+2;
 
   $('#bg_tiles_title').css({ 'left': (right_start+8)+'px' });
-  $('#bg_palette_title').css({ 'left': (right_start+160)+'px' });
-  $('#map_part_title').css({ 'left': (right_start+8)+'px' });
-  $('#help_mes').css({ 'width': (right_start+282)+'px' });
+  $('#bg_palette_title').css({ 'left': (right_start+8)+'px' });
+  $('#map_screens_title').css({ 'left': (mapscreens_start_x+8)+'px' });
+
+  if(map_max_x==20){
+    $('#map_table_info').css({ 'top': '384px','left': '8px', });
+  }else{
+    $('#map_table_info').css({ 'top': '78px','left': '240px', });
+  }
+  if(map_screens==1){
+    $('#map_screens_title').text('');
+    $('#help_mes').css({ 'width': (right_start+137)+'px' });
+  }else{
+    $('#map_screens_title').text('Map Screens:');
+    $('#help_mes').css({ 'width': (right_start+147+MAPSCREEN_SIZE*map_max_x*2+2)+'px' });
+  }
 
   refill_map_table();
   initView();
@@ -122,6 +145,10 @@ function setMapSize(m){
   drawMapTiles();
   showGrid();
   edit_flag = false;
+
+  if(map_screens==4){
+    drawMapScreens();
+  }
 }
 
 function initView(){
@@ -146,6 +173,9 @@ function initView(){
 
   drawPallette();
   drawBase();
+  if(map_screens!=1){
+    selectMapScreen(edit_screen);
+  }
 }
 
 function drawBase(){
@@ -164,6 +194,16 @@ function drawBase(){
   xx = MAP_START_X;
   yy = MAP_START_Y;
   bdrowBox(xx,yy,MAP_SIZE*map_max_x+1,MAP_SIZE*map_max_y+1,EDITOR_BOX);
+
+  // Map Screens
+  xx = mapscreens_start_x;
+  yy = MAPSCREENS_START_Y;
+  if(map_screens==4){
+    bdrowBox(xx,yy,(MAPSCREEN_SIZE*map_max_x+1)*2,(MAPSCREEN_SIZE*map_max_y+1)*2,EDITOR_BOX);
+    bctx.fillStyle = EDITOR_BOX;
+    bctx.fillRect(xx,yy+MAPSCREEN_SIZE*map_max_y+1,(MAPSCREEN_SIZE*map_max_x+1)*2,1);
+    bctx.fillRect(xx+MAPSCREEN_SIZE*map_max_x+1,yy,1,(MAPSCREEN_SIZE*map_max_y+1)*2);
+  }
 }
 
 function bdrowBox(x,y,w,h,c){
@@ -245,17 +285,9 @@ function edit_confirm_alert(mes){
 
 function setMapMax(mapsize){
   switch (mapsize){
-    case '32x64':
-      map_max_x = 32;
-      map_max_y = 64;
-      break;
-    case '64x32':
-      map_max_x = 64;
-      map_max_y = 32;
-      break;
-    case '64x64':
-      map_max_x = 64;
-      map_max_y = 64;
+    case '20x18':
+      map_max_x = 20;
+      map_max_y = 18;
       break;
     default:
       map_max_x = 32;
@@ -278,4 +310,13 @@ function padNum3(v){
 function padNum4(v){
   var len = v.toString().length;
   return (('0000'+v).substring(len,len+4));
+}
+
+function getMaxMaps(s){
+  if(s==0){
+    m = 0;
+  }else{
+    m = map_max_x*map_max_y*s;
+  }
+  return m;
 }

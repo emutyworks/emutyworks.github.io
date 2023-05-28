@@ -121,8 +121,12 @@ function loadInitData(load_array){
   if('MapSize' in up_d){
     setMapMax(up_d['MapSize']);
   }
+  if('MapScreens' in up_d){
+    map_screens = up_d['MapScreens'];
+  }
 
   $('[name="map_size"]').val(getMapSize()).prop('selected',true);
+  $('[name="map_screens"]').val(map_screens).prop('selected',true);
 
   show_grid = false;
   if('ShowGrid' in up_d && up_d['ShowGrid']=="true"){
@@ -169,7 +173,7 @@ function refill_map_table(){
   }
 
   var bak_map_table = map_table.concat();
-  for(var i=0; i<map_max_x*map_max_y; i++){
+  for(var i=0; i<getMaxMaps(map_screens); i++){
     map_table[i] = dec2hex(0);
   }
   for(var i=0; i<map_table.length; i++){
@@ -180,7 +184,7 @@ function refill_map_table(){
   }
 
   var bak_attr_table = attr_table.concat();
-  for(var i=0; i<map_max_x*map_max_y; i++){
+  for(var i=0; i<getMaxMaps(map_screens); i++){
     attr_table[i] = bin2hex(0);
   }
   for(var i=0; i<attr_table.length; i++){
@@ -228,10 +232,13 @@ function map_download(){
   data += '\n';
   data += '\n# [MapTbl]';
   data += '\n# [MapSize] '+getMapSize();
+  data += '\n# [MapScreens] '+map_screens;
   data += '\n# [ShowGrid] '+show_grid;
+
   cnt = 0;
+  var cnt_y = 0;
   do{
-    for(var i=0; i<16; i++){
+    for(var i=0; i<map_max_x; i++){
       if(i==0){
         data += '\n\tdb $'+dec2hex(map_table[cnt]);
       }else{
@@ -239,13 +246,18 @@ function map_download(){
       }
       cnt++;
     }
-  }while(cnt<(map_max_x*map_max_y));
+    cnt_y++;
+    if(cnt_y==map_max_y){
+      data += "\n";
+      cnt_y = 0;
+    }
+  }while(cnt<(getMaxMaps(map_screens)));
 
-  data += '\n';
   data += '\n# [AttributesTbl]';
   cnt = 0;
+  cnt_y = 0;
   do{
-    for(var i=0; i<16; i++){
+    for(var i=0; i<map_max_x; i++){
       if(i==0){
         data += '\n\tdb $'+bin2hex(attr_table[cnt]);
       }else{
@@ -253,7 +265,12 @@ function map_download(){
       }
       cnt++;
     }
-  }while(cnt<(map_max_x*map_max_y));
+    cnt_y++;
+    if(cnt_y==map_max_y){
+      data += "\n";
+      cnt_y = 0;
+    }
+  }while(cnt<(getMaxMaps(map_screens)));
 
   var blob = new Blob([data], {type:'text/plain'});
   

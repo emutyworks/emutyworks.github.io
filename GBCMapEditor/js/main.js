@@ -69,6 +69,11 @@ window.onload = function(){
         if(e.shiftKey && !edit_flag){
           selectMapTable();
         }
+      }else
+      if(checkMapScreensArea() && map_screens!=1){
+        resetMapScreensCursor();
+        setMapScreensCursor();
+        selectMapScreen(cur_info['msi']);
       }
     }
   }
@@ -99,6 +104,10 @@ window.onload = function(){
             console.log('copy!');
           }
         }
+      }else
+      if(checkMapScreensArea() && map_screens!=1){
+        resetMapScreensCursor();
+        setMapScreensCursor();
       }else
       if(!help_flag && !edit_flag){
         editCancel();
@@ -139,6 +148,18 @@ window.onload = function(){
       mi = map_max_x*my+mx;
     }
 
+    var msx = 0;
+    var msy = 0;
+    var msi = 0;
+    if(x>mapscreens_start_x && y>MAPSCREENS_START_Y
+      && x<mapscreens_start_x+(MAPSCREEN_SIZE*map_max_x+1)*2
+      && y<MAPSCREENS_START_Y+(MAPSCREEN_SIZE*map_max_y+1)*2
+    ){
+      msx = Math.trunc((x-mapscreens_start_x)/(MAPSCREEN_SIZE*map_max_x+1));
+      msy = Math.trunc((y-MAPSCREENS_START_Y)/(MAPSCREEN_SIZE*map_max_y+1));
+      msi = msx*2+msy;
+    }
+
     cur_info = {
       org_x: org_x,
       org_y: org_y,
@@ -158,6 +179,10 @@ window.onload = function(){
       smx: cur_info['smx'],
       smy: cur_info['smy'],
       smi: cur_info['smi'],
+      //map screen
+      msx: msx,
+      msy: msy,
+      msi: msi,
     };
   }
 }

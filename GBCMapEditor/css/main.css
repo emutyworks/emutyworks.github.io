@@ -32,25 +32,30 @@ body, input, select, textarea, button, span, tr, td, div{
 #map_table_info{
   position: absolute;
   top: 78px;
-  left: 260px;
+  left: 240px;
 }
 
 #bg_tiles_title{
   position: absolute;
   top: 80px;
-  left: 536px;
+  left: 530px;
 }
 #bg_palette_title{
   position: absolute;
+  top: 368px;
+  left: 530px;
+}
+#map_screens_title{
+  position: absolute;
   top: 80px;
-  left: 688px;
+  left: 676px;
 }
 
 #help_mes{
   position: relative;
   top: 5px;
   background-color: #ffff80;
-  width: 600px;
+  width: 659px;
 }
 
 table, td, th{
@@ -76,6 +81,6 @@ select{
 
 #hr{
   position: relative;
-  top: 670px;
+  top: 550px;
 }
 
