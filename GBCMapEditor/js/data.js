@@ -202,6 +202,8 @@ function map_download(){
   $('#map_download').attr('download',filename+'.txt');
 
   var data = "";
+  data += '# This data was created with GBCMapEditor.\n';
+  data += '# https://github.com/emutyworks/GBCMapEditor/wiki\n';
   data += '# [Create] '+dt.toString()+'\n';
   data += '# [FileName] '+filename+'\n';
   data += '#\n';
