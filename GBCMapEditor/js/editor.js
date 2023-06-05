@@ -404,6 +404,9 @@ function setBGTilesPalette(keycode){
 }
 
 function drawMapScreens(){
+  if(map_screens==1){
+    return;
+  }
   for(var i=0; i<map_screens; i++){
     _drawMapScreen(i);
   }
@@ -436,6 +439,10 @@ function _drawMapScreen(i){
 }
 
 function drawMapScreen(x,y){
+  if(map_screens==1){
+    return;
+  }
+  
   var mx = MAPSCREEN_SIZE*map_max_x+1;
   var my = MAPSCREEN_SIZE*map_max_y+1;
   var xx = mapscreens_start_x+1;

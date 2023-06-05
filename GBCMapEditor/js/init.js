@@ -144,11 +144,8 @@ function setMapSize(m){
   drawBgTiles();
   drawMapTiles();
   showGrid();
+  drawMapScreens();
   edit_flag = false;
-
-  if(map_screens==4){
-    drawMapScreens();
-  }
 }
 
 function initView(){
