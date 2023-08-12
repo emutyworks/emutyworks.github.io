@@ -311,16 +311,16 @@ function drawBgTiles(){
 }
 
 function attr2Priority(attr){
-  return (attr&0b10000000)>>7;
+  return (bin2dec(attr)&0b10000000)>>7;
 }
 function attr2VerticalFlip(attr){
-  return (attr&0b01000000)>>6;
+  return (bin2dec(attr)&0b01000000)>>6;
 }
 function attr2HorizontalFlip(attr){
-  return (attr&0b00100000)>>5;
+  return (bin2dec(attr)&0b00100000)>>5;
 }
 function attr2Palette(attr){
-  return attr&0b00000111;
+  return (bin2dec(attr)&0b00000111);
 }
 
 function setMapTableInfo(){
@@ -361,7 +361,7 @@ function setMapAttributes(keycode){
     }else{
       v = 0;
     }
-  }
+  }else
   if(keycode===80){//p
     if(pri==0){
       pri = 1;
