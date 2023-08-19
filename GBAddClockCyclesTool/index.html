@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title>Game Boy Add Clock Cycles Tool (prototype)</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-language" content="ja" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="js/init.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+</head>
+<body>
+This tool to add clock cycles of CPU (LR35902) to Game Boy assembly code.<br>
+<table>
+<tr>
+<td>Please input assembly source code:</td><td>Output: <a href="#" onClick="add_comment()">[ Add comment ]</a></td>
+</tr>
+<tr>
+<td><textarea name="asm" rows="40" cols="60"></textarea></td>
+<td><textarea name="result" rows="40" cols="60"></textarea></td>
+</tr>
+</table>
+<div id="hr">
+<a href="https://gbdev.io/pandocs/CPU_Instruction_Set.html" target="_blank">Pan Docs: CPU Instruction Set</a> | <a href="https://rgbds.gbdev.io/docs/master/gbz80.7/" target="_blank">RGBDS: CPU opcode reference</a>
+<hr>
+<a href="https://github.com/emutyworks/GBAddClockCyclesTool/wiki" target="_blank">https://github.com/emutyworks/GBAddClockCyclesTool/wiki</a>
+</div>
+</body>
+</html>

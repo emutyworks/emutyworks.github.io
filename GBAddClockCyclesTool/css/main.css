@@ -1,0 +1,16 @@
+body, input, select, textarea, button, span, div{
+  font-family: sans-serif;
+  font-size: 8pt;
+  padding: 0px 0px 0px 0px;
+  cursor: default;
+}
+
+table, tr, td{
+  padding: 0px 0px 0px 0px;
+  border-collapse: collapse;
+  border: 0px;
+}
+
+#hr{
+  position: relative;
+}
