@@ -4,6 +4,7 @@ function add_comment(){
   var asm_txt = '';
   var asm_array = null;
   var result = '';
+  var sum = 0;
 
   asm_txt = $("textarea[name='asm']").val();
   asm_array = asm_txt.split('\n');
@@ -45,15 +46,43 @@ function add_comment(){
         key = row_left[0];
       }
     }
+
     if(opcode[key]){
-      var clock = ';'+opcode[key];
-      if(row_org.indexOf(clock+" ") == -1 && (row_org.indexOf(clock) == -1
-      || row_org.indexOf(clock)!=(row_org.length - clock.length))
+      var clock = opcode[key];
+      var clock_str = ';'+clock;
+      var clock_sum_str = '';
+
+      if(clock.indexOf('/') != -1){
+        var clock_array = clock.split('/');
+        var clock1 = parseInt(clock_array[0]);
+        var clock2 = parseInt(clock_array[1]);
+        clock_sum_str = clock_str+' = '+(sum+clock1)+'/'+(sum+clock2);
+        sum += clock2;
+      }else{
+        sum += parseInt(clock);
+        clock_sum_str = clock_str+' = '+sum;
+      }
+      if(reset_sum[ key ]===true){
+        sum = 0;
+      }
+
+      if((reset_sum[ key ]===undefined && row_org.indexOf(clock_str+" ") == -1 &&
+      (row_org.indexOf(clock_str) == -1 || row_org.indexOf(clock_str)!=(row_org.length - clock_str.length)))
+      || (reset_sum[ key ]!==undefined && row_org.indexOf(clock_sum_str+" ") == -1 &&
+      (row_org.indexOf(clock_sum_str) == -1 || row_org.indexOf(clock_sum_str)!=(row_org.length - clock_sum_str.length)))
       ){
         if(row_org.indexOf(';') != -1){
-          result += row_org.replace(';', clock+' ;')+"\n";
+          if(reset_sum[ key ]===undefined){
+            result += row_org.replace(';', clock_str+' ;')+"\n";
+          }else{
+            result += row_org.replace(';', clock_sum_str+' ;')+"\n";
+          }
         }else{
-          result += row_org+' '+clock+"\n";
+          if(reset_sum[ key ]===undefined){
+            result += row_org+' '+clock_str+"\n";
+          }else{
+            result += row_org+' '+clock_sum_str+"\n";
+          }
         }
       }else{
         result += row_org+"\n";

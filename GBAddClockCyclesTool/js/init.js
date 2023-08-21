@@ -193,7 +193,7 @@ var opcode = {
   'ei':'4',
 
   //Jump instructions
-  'jp nn':'16',
+  'jp n':'16', //jp nn
   'jp rr':'16', //jp HL
   'jp r,n':'16/12', //jp f,nn
   'jr n':'12', //jr PC+dd
@@ -204,6 +204,18 @@ var opcode = {
   'ret r':'20/8', //ret f
   'reti':'16',
   'rst n':'16',
-
 };
 
+var reset_sum = {
+  'jp n': true, //jp nn
+  'jp rr': true, //jp HL
+  'jp r,n': false, //jp f,nn
+  'jr n': true, //jr PC+dd
+  'jr r,n': false, //jr f,PC+dd
+  'call n': false, //call nn
+  'call r,n': false, //call f,nn
+  'ret': true,
+  'ret r': false, //ret f
+  'reti': true,
+  'rst n': false,
+};
