@@ -47,6 +47,8 @@ var instruction = [
   'ret',
   'reti',
   'rst',
+  'macro',
+  'endm'
 ];
 
 var replacement = {
@@ -204,6 +206,10 @@ var opcode = {
   'ret r':'20/8', //ret f
   'reti':'16',
   'rst n':'16',
+
+  // other
+  'macro n': '0',
+  'endm': '0',
 };
 
 var reset_sum = {
@@ -218,4 +224,5 @@ var reset_sum = {
   'ret r': false, //ret f
   'reti': true,
   'rst n': false,
+  'endm': true,
 };

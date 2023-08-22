@@ -17,7 +17,16 @@ function add_comment(){
     var row_left = row_nocomment[0].trim().split(' ');
     var key = '';
 
-    if(instruction.indexOf(row_left[0]) != -1){
+    var add_clock = 0;
+    if(row_nocomment[1]!==undefined){
+      let reg = /[0-9]{1,4}/;
+      let res = reg.exec(row_nocomment[1]);
+      if(res!=null){
+        add_clock = parseInt(res[0]);
+      }
+    }
+
+    if(instruction.indexOf(row_left[0]) != -1 || add_clock!=0){
       if(row_left[1]!==undefined){
         var row_right = row_left[1].trim().split(',');
         var row_right1 = row_right[0];
@@ -49,7 +58,10 @@ function add_comment(){
 
     if(opcode[key]){
       var clock = opcode[key];
-      var clock_str = ';'+clock;
+      var clock_str = '';
+      if(clock!='0'){
+        clock_str = ';'+clock;
+      }
       var clock_sum_str = '';
 
       if(clock.indexOf('/') != -1){
@@ -62,7 +74,7 @@ function add_comment(){
         sum += parseInt(clock);
         clock_sum_str = clock_str+' = '+sum;
       }
-      if(reset_sum[ key ]===true){
+      if(reset_sum[ key ]){
         sum = 0;
       }
 
@@ -88,10 +100,12 @@ function add_comment(){
         result += row_org+"\n";
       }
     }else
-    if(key==''){
+    if(key=='' || add_clock!=0){
+      if(add_clock!=0){
+        sum += add_clock;
+      }  
       result += row_org+"\n";
-    }
-    else{
+    }else{
       //debug
       result += key+"\n";
       console.log(key);
