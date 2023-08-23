@@ -1,6 +1,6 @@
-//window.onload = function(){ add_comment(); } //debug
+//window.onload = function(){ comment('add'); } //debug
 
-function add_comment(){
+function comment(mode){
   var asm_txt = '';
   var asm_array = null;
   var result = '';
@@ -72,15 +72,19 @@ function add_comment(){
         sum += clock2;
       }else{
         sum += parseInt(clock);
-        clock_sum_str = clock_str+' = '+sum;
+        if(clock_str!=''){
+          clock_sum_str = clock_str+' = '+sum;
+        }else{
+          clock_sum_str = ';= '+sum;
+        }
       }
       if(reset_sum[ key ]){
         sum = 0;
       }
 
-      if((reset_sum[ key ]===undefined && row_org.indexOf(clock_str+" ") == -1 &&
+      if((mode=='add' && reset_sum[ key ]===undefined && row_org.indexOf(clock_str+" ") == -1 &&
       (row_org.indexOf(clock_str) == -1 || row_org.indexOf(clock_str)!=(row_org.length - clock_str.length)))
-      || (reset_sum[ key ]!==undefined && row_org.indexOf(clock_sum_str+" ") == -1 &&
+      || (mode=='add' && reset_sum[ key ]!==undefined && row_org.indexOf(clock_sum_str+" ") == -1 &&
       (row_org.indexOf(clock_sum_str) == -1 || row_org.indexOf(clock_sum_str)!=(row_org.length - clock_sum_str.length)))
       ){
         if(row_org.indexOf(';') != -1){
@@ -97,7 +101,31 @@ function add_comment(){
           }
         }
       }else{
-        result += row_org+"\n";
+        if(mode=='del'){
+          var match_array = row_org.match(/;/gi);
+
+          if(match_array!=null){
+            if(reset_sum[ key ]===undefined){
+              if(row_org.indexOf(clock_str)==(row_org.length - clock_str.length)
+              || match_array.length==2){
+                result += row_org.replace(clock_str, '')+"\n";
+              }else{
+                result += row_org.replace(clock_str, ';')+"\n";
+              }
+            }else{
+              if(row_org.indexOf(clock_sum_str)==(row_org.length - clock_sum_str.length)
+              || match_array.length==2){
+                result += row_org.replace(clock_sum_str, '')+"\n";
+              }else{
+                result += row_org.replace(clock_sum_str, ';')+"\n";
+              }
+            }
+          }else{
+            result += row_org+"\n";
+          }
+        }else{
+          result += row_org+"\n";
+        }
       }
     }else
     if(key=='' || add_clock!=0){
