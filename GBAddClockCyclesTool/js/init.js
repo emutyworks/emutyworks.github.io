@@ -59,6 +59,7 @@ var replacement = {
   'e':'r',
   'h':'r',
   'l':'r',
+  'af':'rr',
   'bc':'rr',
   'de':'rr',
   'hl':'rr',
