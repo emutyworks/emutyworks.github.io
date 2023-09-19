@@ -108,14 +108,14 @@ function comment(mode){
             if(reset_sum[ key ]===undefined){
               if(row_org.indexOf(clock_str)==(row_org.length - clock_str.length)
               || match_array.length==2){
-                result += row_org.replace(clock_str, '')+"\n";
+                result += row_org.replace(' '+clock_str, '')+"\n";
               }else{
                 result += row_org.replace(clock_str, ';')+"\n";
               }
             }else{
               if(row_org.indexOf(clock_sum_str)==(row_org.length - clock_sum_str.length)
               || match_array.length==2){
-                result += row_org.replace(clock_sum_str, '')+"\n";
+                result += row_org.replace(' '+clock_sum_str, '')+"\n";
               }else{
                 result += row_org.replace(clock_sum_str, ';')+"\n";
               }
