@@ -98,14 +98,14 @@ var opcode = {
   'ld r,[bc]':'8', //ld A,[BC]
   'ld r,[de]':'8', //ld A,[DE]
   'ld r,[nn]':'16', //ld A,[nn]
-  'ld [bc],a':'8',
-  'ld [de],a':'8',
+  'ld [bc],r':'8',
+  'ld [de],r':'8',
   'ld [nn],r':'16', //ld [nn],A
   'ldh r,[nn]':'12', //ldh A,[nn]
   'ldh [nn],r':'12', //ldh [nn],A
-  'ldh a,[c]':'8',
-  'ld [c],a':'8',
-  'ld [hli],a':'8',
+  'ldh r,[c]':'8',
+  'ld [c],r':'8',
+  'ld [hli],r':'8',
   'ld r,[hli]':'8', //ld A,[HLI]
   'ld [hld],r':'8', //ld [HLD],A
   'ld r,[hld]':'8', //ld A,[HLD]
