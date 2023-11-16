@@ -13,9 +13,16 @@ function comment(mode){
     var row_org = asm_array[i];
     var row = row_org.replace(/\t/g,'').toLowerCase().trim();
 
-    var row_nocomment = row.split(';');
-    var row_left = row_nocomment[0].trim().split(' ');
     var key = '';
+    var row_nocomment = row.split(';');
+    row_nocomment[0] = row_nocomment[0].trim();
+    var space_pos = row_nocomment[0].indexOf(' ');
+    var row_left = [];
+    row_left[0] = row_nocomment[0];
+    if(space_pos!=-1){
+      row_left[0] = row_nocomment[0].substring(0,space_pos).replace(/\s+/g,'');
+      row_left[1] = row_nocomment[0].substring(space_pos).replace(/\s+/g,'');
+    }
 
     var add_clock = 0;
     if(row_nocomment[1]!==undefined){
