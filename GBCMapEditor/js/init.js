@@ -133,7 +133,7 @@ function setMapSize(m){
   }
   if(map_screens==1){
     $('#map_screens_title').text('');
-    $('#help_mes').css({ 'width': (right_start+237)+'px' });
+    $('#help_mes').css({ 'width': (right_start+273)+'px' });
   }else{
     $('#map_screens_title').text('Map Screens:');
     $('#help_mes').css({ 'width': (right_start+283+MAPSCREEN_SIZE*map_max_x*2+2)+'px' });

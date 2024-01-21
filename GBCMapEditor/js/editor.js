@@ -392,7 +392,12 @@ function setMapAttributes(keycode){
 function setBGTilesInfo(){
   var i = cur_info['bi'];
   var p = tile_palette[i];
-  var txt = 'BG Tiles:[idx: '+padNum3(i)+' pal: '+p+']';
+  var txt = '';
+  if(i<128){
+    txt = 'BG Tiles:[idx: '+padNum3(i)+' pal: '+p+']';
+  }else{
+    txt = 'BG Tiles:[idx: '+padNum3(i)+'('+padNum3(i-128)+') pal: '+p+']';
+  }
   $('#bg_tiles_title').text(txt);
 }
 
