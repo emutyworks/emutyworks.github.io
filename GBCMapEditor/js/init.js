@@ -5,9 +5,9 @@ var MAPSCREEN_DOT = 1;
 var BGTILES_SIZE = BGTILES_DOT*8;
 var MAP_SIZE = MAP_DOT*8;
 var MAPSCREEN_SIZE = MAPSCREEN_DOT*8;
-var BGTILES_MAX_X = 8;
+var BGTILES_MAX_X = 16;
 var BGTILES_MAX_Y = 16;
-var BGTILES_MAX = 128;
+var BGTILES_MAX = 256;
 var OFFSET_X = 8;
 var OFFSET_Y = 94;
 var MAP_START_X = 0;
@@ -133,10 +133,10 @@ function setMapSize(m){
   }
   if(map_screens==1){
     $('#map_screens_title').text('');
-    $('#help_mes').css({ 'width': (right_start+137)+'px' });
+    $('#help_mes').css({ 'width': (right_start+237)+'px' });
   }else{
     $('#map_screens_title').text('Map Screens:');
-    $('#help_mes').css({ 'width': (right_start+147+MAPSCREEN_SIZE*map_max_x*2+2)+'px' });
+    $('#help_mes').css({ 'width': (right_start+283+MAPSCREEN_SIZE*map_max_x*2+2)+'px' });
   }
 
   refill_map_table();

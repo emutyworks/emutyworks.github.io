@@ -32,7 +32,52 @@ $(function(){
           break;
         }
       }
+      row_array = ["0","0","0","0","0","0","0","0"];
+      for($i=0; $i<1024; $i++){
+        bg_tiles[$i+1024] = row_array.concat();
+      }
       $("input:file[name='bin_upload']").val('');
+      bin_upload = true;
+      setMes('reset');
+      setMapSize();
+    }
+    reader.readAsArrayBuffer(file);
+  });
+
+  $("input:file[name='bin_upload2']").change(function(e){
+
+    var file = e.target.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function() {
+      var ar = new Uint8Array(reader.result);
+      var tile_cnt = 0;
+      for(var i=0; i<ar.length; i+=2){
+        var dataH = dec2bin8(ar[i+1]);
+        var dataL = dec2bin8(ar[i]);
+        var row_array = [];
+        for(var j=0; j<8; j++){
+          var dh = dataH.charAt(j);
+          var dl = dataL.charAt(j);
+          if(dh=="1" && dl=="1"){
+            row_array[j] = "3";
+          }else
+          if(dh=="1" && dl=="0"){
+            row_array[j] = "2";
+          }else
+          if(dh=="0" && dl=="1"){
+            row_array[j] = "1";
+          }else{
+            row_array[j] = "0";
+          }
+        }
+        bg_tiles[tile_cnt + 1024] = row_array.concat();
+        tile_cnt++;
+        if(tile_cnt>=BGTILES_MAX*8){
+          break;
+        }
+      }
+      $("input:file[name='bin_upload2']").val('');
       bin_upload = true;
       setMes('reset');
       setMapSize();

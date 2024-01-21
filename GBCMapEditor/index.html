@@ -15,7 +15,7 @@
 <script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
-Upload tiles.bin (GBTD export file/All-purpose binary):<input type="file" name="bin_upload" accept="*/*"><br>
+Upload tiles.bin (GBTD export file/All-purpose binary): (0-127)<input type="file" name="bin_upload" accept="*/*">(128-255)<input type="file" name="bin_upload2" accept="*/*"><br>
 <a href="#" id="map_download" onClick="map_download()">Download:</a> <input type="text" name="download_file" size="12"> Upload:<input type="file" name="map_upload" accept="*/*"><br>
 <div id="help_mes"></div>
 <span id="map_table_title">Map Table: edit <select name="map_size" onchange="setMapSize('confirm')">
